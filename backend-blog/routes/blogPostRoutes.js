@@ -177,5 +177,123 @@ router.patch("/:id/cover", cloudinaryUploader.single("cover"), async (req, res) 
   }
 });
 
+// Aggiungiamo le rotte per i commenti.
+
+//1a cosa....get dei commenti
+
+router.get("/:id/comments", async (req, res) => {
+  try {
+    const post = await BlogPost.findById(req.params.id);
+
+    //Cerchiamo se il post esiste
+    if (!post) {
+      return res.status(404).json({ message: "Post non trovato" });
+    }
+    res.json(post.comments);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+// Abilitiamo la get di un singolo commenti prendendo l'id del commento:
+
+router.get("/:id/comments/:commentId", async (req, res) => {
+  try {
+    const post = await BlogPost.findById(req.params.id);
+
+    //Cerchiamo se il post esiste
+    if (!post) {
+      return res.status(404).json({ message: "Post non trovato" });
+    }
+    const comment = post.comments.id(req.params.commentId);
+
+    //Cerchiamo se il commento esiste
+    if (!comment) {
+      return res.status(404).json({ message: "Commento non trovato" });
+    }
+    res.json(comment);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Abilitiamo la post dei commenti:
+
+router.post("/:id/comments", async (req, res) => {
+  try {
+    const post = await BlogPost.findById(req.params.id);
+
+    //Cerchiamo se il post esiste
+    if (!post) {
+      return res.status(404).json({ message: "Post non trovato" });
+    }
+
+    // creiamo un oggetto "new comment" che verrà pushiato nell'array "comments" creato nel post schema
+    const newComment = {
+      name: req.body.name,
+      email: req.body.email,
+      content: req.body.content
+    };
+    post.comments.push(newComment);
+    await post.save();
+    res.status(201).json(newComment);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+//Abilitiamo le modifiche del singolo commento, quindi abbiamo bisogno dell'id del post e di quello del commento:
+
+router.put("/:id/comments/:commentId", async (req, res) => {
+  try {
+    const post = await BlogPost.findById(req.params.id);
+
+    //Verifichiamo che il post esiste
+    if (!post) {
+      return res.status(404).json({ message: "Post non trovato" });
+    }
+    const comment = post.comments.id(req.params.commentId);
+
+    //Verifichiamo che il commento esiste
+    if (!comment) {
+      return res.status(404).json({ message: "Commento non trovato" });
+    }
+
+    //Ovviamente si modifica solo il commento in se, quindi si passa come body solo il nuovo commento e si inserisce in "comment.content"
+    comment.content = req.body.content;
+    await post.save();
+    res.json(comment);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+
+// Abilitiamo il Delete:
+
+router.delete("/:id/comments/:commentId", async (req, res) => {
+  try {
+    const post = await BlogPost.findById(req.params.id);
+
+    //Verifichiamo che il post esiste
+    if (!post) {
+      return res.status(404).json({ message: "Post non trovato" });
+    }
+    const comment = post.comments.id(req.params.commentId);
+
+    //Verifichiamo che il post esiste
+    if (!comment) {
+      return res.status(404).json({ message: "Commento non trovato" });
+    }
+
+    //usiamo semplicemente comment remove e salviamo tutto il post
+    comment.remove();
+    await post.save();
+    res.json({ message: "Commento eliminato con successo" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 export default router; // Esporta il router per l'utilizzo in altri file

@@ -16,7 +16,7 @@ export const updateAuthor = (id, authorData) =>
 export const deleteAuthor = (id) => api.delete(`/author/${id}`);
 
 
-// Funzioni per le operazioni CRUD di blogPost
+// Funzioni per le operazioni CRUD di blogPost : GET, GET SINGOLO, POST, PUT, DELETE
 export const getPosts = () => api.get("/blogPost");
 export const getPost = (id) => api.get(`/blogPost/${id}`);
 export const createPost = (postData) =>
@@ -24,12 +24,28 @@ export const createPost = (postData) =>
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        });
-      
+        });      
 export const updatePost = (id, postData) =>
         api.put(`/blogPosts/${id}`, postData);
 export const deletePost = (id) => api.delete(`/blogPost/${id}`);
 
+
+
+// Funzioni per gestire i commenti :
+export const getComments = (postId) =>
+        api.get(`/blogPost/${postId}/comments`).then((response) => response.data);
+export const addComment = (postId, commentData) =>
+        api.post(`/blogPost/${postId}/comments`, commentData)
+        .then((response) => response.data);
+export const getComment = (postId, commentId) =>
+        api.get(`/blogPost/${postId}/comments/${commentId}`)
+        .then((response) => response.data);
+export const updateComment = (postId, commentId, commentData) =>
+        api.put(`/blogPost/${postId}/comments/${commentId}`, commentData)
+        .then((response) => response.data);
+export const deleteComment = (postId, commentId) =>
+        api.delete(`/blogPost/${postId}/comments/${commentId}`)
+        .then((response) => response.data);
 
 
 // Infine, esportiamo api

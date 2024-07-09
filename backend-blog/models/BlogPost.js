@@ -1,7 +1,21 @@
+import mongoose from "mongoose";
 import { Schema, model } from "mongoose";
 
+// NEW: AGGIUNGO LO SCHEMA PER I COMMENTI!
+const commentSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    email: { type: String, required: true },
+    content: { type: String, required: true },
+  },
+  {
+    timestamps: true,
+    _id: true // Mi assicuro che ogni commento abbia un proprio _id univoco
+  },
+);
+
 // Definizione dello schema dell'utente utilizzando il costruttore Schema di Mongoose
-const blogPostSchema = new Schema(
+const blogPostSchema = new mongoose.Schema(
   {
     // Campo 'categoria' di tipo String obbligatorio (required)
     category: {
@@ -34,10 +48,12 @@ const blogPostSchema = new Schema(
     // Campo 'content' di tipo String
     content: {
         type: String,
-    },   
+    },  
+    comments: [commentSchema] 
   },
   {
     // Opzioni dello schema:
+    timestamps: true,
     collection: "blogPost", // Specifica il nome della collezione nel database MongoDB
   }
 );
