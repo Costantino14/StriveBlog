@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Container, Form, Image, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Image, ListGroup, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import BlogLike from "../../components/likes/BlogLike";
 import { addComment, getComments, getPost } from "../../services/api";
 import "./styles.css";
+import { AiOutlineComment } from "react-icons/ai";
 
 const Blog = props => {
+
+
+  const [commentsOn, setCommentsOn] = useState(false)
   
       // Stato per memorizzare i dati del post
   const [post, setPost] = useState(null);
@@ -71,14 +75,19 @@ const Blog = props => {
     }
   };
 
+  const handleClickBotton = (e) => {
+    setCommentsOn(!commentsOn)
+  }
+
   // Se il post non è ancora stato caricato, mostra un messaggio di caricamento
   if (!post) return <div>Caricamento...</div>;
 
     return (
       <div className="blog-details-root">
         <Container>
-          <Image className="blog-details-cover" src={post.cover} fluid />
           <h1 className="blog-details-title">{post.title}</h1>
+          <Image className="blog-details-cover" src={post.cover} fluid />
+          
 
           <div className="blog-details-container">
             <div className="blog-details-author">
@@ -100,85 +109,96 @@ const Blog = props => {
                   marginTop: 20,
                 }}
               >
-                <BlogLike defaultLikes={["123"]} onChange={console.log} />
               </div>
             </div>
           </div>
 
-          <div>
+          <div className="my-5">
              {post.content} 
           </div>
+          <div className="d-flex">
+            <BlogLike defaultLikes={["123"]} onChange={console.log} />
+            <Button
+        variant={"dark"}
+        className="ms-2"
+        onClick={handleClickBotton}
+      >
+        <AiOutlineComment /> {`${comments.length} comments`}
+      </Button>
+          </div>
+          
+
+
 
       {/*QUA INIZIANO I COMMENTI, VERIFICHIAMO SE CI SONO*/}
 
-          <div className="mt-5">
-          <h2>Commenti</h2>
-          <ul className="mt-3">
-          {comments.length > 0 ? (
-            
-            comments.map((comment) => (
-              
-              <li key={comment._id} className="mt-2">
-                <h5>Utente: {comment.name}</h5>
-                <p>{comment.content}</p>
-              </li>
-              
-            ))
-           
-          ) : (
-            <p>Ancora nessun commento</p>
-          )}
-          </ul>
+          
+          { commentsOn && ( 
+            <div className="mt-5">
+              <h2>Commenti</h2>
+              <ListGroup as="ul" className="mt-3">
+                {comments.length > 0 ? (
+                comments.map((comment) => (
+                  <ListGroup.Item 
+                    as="li" 
+                    numbered 
+                    key={comment._id} 
+                    className="mt-2">
+                      {comment.content}<br/> Utente: {comment.name}
+                  </ListGroup.Item>        
+                ))   
+                ) : (
+                  <p>Ancora nessun commento</p>
+                )}
+              </ListGroup>
+            </div> 
+          ) }
 
           {/*Form per aggiungere un nuovo commento */}
           <Form className="mt-5"  onSubmit={handleCommentSubmit}>
-          <h2>Articolo</h2>
-        <Form.Group controlId="blog-form" className="mt-3">
-          <Form.Label>Nome:</Form.Label>
-          <Form.Control
-              type="text"
-              name="name"
-              value={newComment.name}
-              onChange={handleCommentChange}
-              placeholder="Il tuo nome..."
-              required
-            />
+            <h2>Inserisci un commento:</h2>
+            <Form.Group controlId="blog-form" className="mt-3">
+              <Form.Label>Nome:</Form.Label>
+              <Form.Control
+                type="text"
+                name="name"
+                value={newComment.name}
+                onChange={handleCommentChange}
+                placeholder="Il tuo nome..."
+                required
+              />
             </Form.Group>
             <Form.Group controlId="blog-form" className="mt-3">
-          <Form.Label>Email:</Form.Label>
-          <Form.Control
-              type="email"
-              name="email"
-              value={newComment.email}
-              onChange={handleCommentChange}
-              placeholder="La tua email..."
-              required
-            />
-            </Form.Group>
-            <Form.Group controlId="blog-content" className="mt-3">
-          <Form.Label>Testo articolo</Form.Label>
-          <Form.Control
-            as="textarea"
-              name="content"
-              value={newComment.content}
-              onChange={handleCommentChange}
-              placeholder="Il tuo commento"
-              required
-            />
-
-            </Form.Group>
-            <Button
-            type="submit"
-            size="lg"
-            variant="dark"
-            style={{
-            marginTop: "2em",
-            }}
-          >
-            Aggiungi commento
-          </Button>
-          </Form>
-          </div>
+              <Form.Label>Email:</Form.Label>
+              <Form.Control
+                type="email"
+                name="email"
+                value={newComment.email}
+                onChange={handleCommentChange}
+                placeholder="La tua email..."
+                required
+                />
+              </Form.Group>
+              <Form.Group controlId="blog-content" className="mt-3">
+                <Form.Label>Testo articolo</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  name="content"
+                  value={newComment.content}
+                  onChange={handleCommentChange}
+                  placeholder="Il tuo commento"
+                  required
+                  />
+                </Form.Group>
+                <Button
+                  type="submit"
+                  size="lg"
+                  variant="dark"
+                  style={{marginTop: "2em"}}
+                  >
+                  Aggiungi
+                </Button>
+              </Form>
           
         </Container>
       </div>

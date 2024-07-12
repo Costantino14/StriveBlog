@@ -2,7 +2,7 @@
   width: 100%;
   border-radius: 10px;
   margin-bottom: 50px;
-  max-height: 80vh;
+  max-height: 70vh;
   object-fit: cover;
   object-position: 0% 0%;
   margin-top: 50px;
@@ -17,7 +17,6 @@
 
 .blog-details-title {
   margin-top: 50px;
-  margin-bottom: 50px;
   font-weight: bold;
 }
 

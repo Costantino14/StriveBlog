@@ -4,6 +4,7 @@ import express from "express"; // Importa il pacchetto Express
 import BlogPost from "../models/BlogPost.js"; // Importa il modello author
 import cors from 'cors'
 import upload from "../middlewares/upload.js";
+import { v2 as cloudinary} from "cloudinary";
 
 //import controlloMail from "../middlewares/controlloMail.js"  //Questa roba se vuoi fare un controllo della mail o di un altro dato
 
@@ -135,19 +136,38 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+
 // Rotta per eliminare un utente
 router.delete("/:id", async (req, res) => {
   try {
-    const deletePost = await BlogPost.findByIdAndDelete(req.params.id); // Elimina un utente per ID
-    if(!deletePost) {
+
+    const blogPost = await BlogPost.findById(req.params.id); // Elimina un utente per ID
+    if(!blogPost) {
       return res.status(404).json({ message: "Post non trovato" }); // Se l'utente non esiste, risponde con un errore 404
-    } else {
-    res.json({ message: "Post Cancellato Dalla Lista" }); // Risponde con un messaggio di conferma
-  }
+    } 
+    
+    const publicId = `blog_covers/${blogPost.cover.split('/').pop().split('.')[0]}`;
+    console.log("Extracted publicId", publicId);
+
+    try {
+      const result = await cloudinary.uploader.destroy(publicId);
+      console.log("Cloudinary deletion result", result);
+
+    } catch (cloudinaryError) {
+      console.error('Cloudinary deletion error', cloudinaryError);
+    }
+// Elimina il blog post dal database
+await BlogPost.findByIdAndDelete(req.params.id)
+
+// Invia un messaggio di conferma come risposta JSO/V
+res.json({ message:"Blog post e immagine di copertina eliminati"});
   } catch (err) {
-    res.status(500).json({ message: err.message }); // Gestisce errori e risponde con un messaggio di errore
+// In caso di errore, invia una risposta di errore
+  res.status(500).json({message: err.message}) ;
   }
+
 });
+
 
 // PATCH /blogPosts/:blogPostId/cover: carica un'immagine di copertina per il post specificato
 router.patch("/:id/cover", cloudinaryUploader.single("cover"), async (req, res) => {
@@ -288,7 +308,7 @@ router.delete("/:id/comments/:commentId", async (req, res) => {
     }
 
     //usiamo semplicemente comment remove e salviamo tutto il post
-    comment.remove();
+    post.comments.pull(req.params.commentId);
     await post.save();
     res.json({ message: "Commento eliminato con successo" });
   } catch (error) {

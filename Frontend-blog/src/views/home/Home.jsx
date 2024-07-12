@@ -47,7 +47,9 @@ const Home = () => {
         .map((post) => (
           <Col
             key={`item-${post._id}`}
-            md={4}
+            xs={12}
+            md={6}
+            lg={4}
             style={{
               marginBottom: 50,
             }}

@@ -150,6 +150,7 @@ const NewBlogPost = (setAuthors, authors) => {
           />
           <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
         </Form.Group>
+
         <Form.Group as={Col} md="4" controlId="validationCustom02">
           <Form.Label>Avatar</Form.Label>
           <Form.Control
@@ -162,11 +163,13 @@ const NewBlogPost = (setAuthors, authors) => {
           />
           <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
         </Form.Group>
+        
       </Row>
-      <Button type="reset" size="lg" variant="outline-dark">
+      <Form.Group className="d-flex mt-3 justify-content-end">
+        <Button type="reset" size="lg" variant="outline-dark">
             Reset
-          </Button>
-          <Button
+        </Button>
+        <Button
             type="submit"
             size="lg"
             variant="dark"
@@ -175,7 +178,8 @@ const NewBlogPost = (setAuthors, authors) => {
             }}
           >
             Invia
-          </Button>
+        </Button>
+      </Form.Group>
       </Form>
 
       {/*INIZIO FORM PER CREARE UN POST*/}
@@ -201,6 +205,7 @@ const NewBlogPost = (setAuthors, authors) => {
             value={post.category}
             onChange={handleChange}
           >
+            <option>Seleziona una categoria...</option>
             <option>Attualità</option>
             <option>Storia</option>
             <option>Informatica</option>
