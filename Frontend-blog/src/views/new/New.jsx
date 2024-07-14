@@ -1,29 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Container, Form, InputGroup, Row , Col} from "react-bootstrap";
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import "./styles.css";
 import { useNavigate } from "react-router-dom";
-import { createAuthor, createPost } from "../../services/api";
+import { createPost, getMe } from "../../services/api";
 
 const NewBlogPost = (setAuthors, authors) => {
 
    /* PARTE POST AUTORI */
   
   // Stato per gestire i dati del nuovo utente da creare
-   const [newAuthor, setNewAuthor] = useState({ nome: "", cognome: "",email: "", dataNascita: "", avatar: ""});
-  
-   const AuthorSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      console.log(post)
-      // Invia i dati del post al backend
-      await createAuthor(newAuthor);
-      // Naviga alla rotta della home dopo la creazione del post
-      navigate("/");
-    } catch (error) {
-      console.error("Errore nella creazione del post:", error);
-    }
-  };
+   
 
   /* PARTE POST BLOG*/
 
@@ -86,102 +73,26 @@ const NewBlogPost = (setAuthors, authors) => {
     }
   };
 
+// NEW! useEffect per l'autenticazione
+useEffect(() => {
+  const fetchUserEmail = async () => {
+    try {
+      const userData = await getMe();
+      setPost((prevPost) => ({ ...prevPost, authorEmail: userData.email }));
+    } catch (error) {
+      console.error("Errore nel recupero dei dati utente:", error);
+      navigate("/login");
+    }
+  };
+  fetchUserEmail();
+}, [navigate]);
+
   
  
 
   return (
     <Container className="new-blog-container">
       <h2 className="mt-5">Autore</h2>
-
-      {/*INIZIO FORM AUTORI*/}
-      <Form onSubmit={AuthorSubmit}>
-      <Row>
-        <Form.Group as={Col} md="4" controlId="validationCustom01">
-          <Form.Label>Nome</Form.Label>
-          <Form.Control
-            size="lg"
-            required
-            type="text"
-            placeholder="First name"
-            value={newAuthor.nome}
-            onChange={(e) => setNewAuthor({ ...newAuthor, nome: e.target.value })}
-          />
-          <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-        </Form.Group>
-        <Form.Group as={Col} md="4" controlId="validationCustom02">
-          <Form.Label>Cognome</Form.Label>
-          <Form.Control
-            size="lg"
-            required
-            type="text"
-            placeholder="Last name"
-            value={newAuthor.cognome}
-            onChange={(e) => setNewAuthor({ ...newAuthor, cognome: e.target.value })}
-          />
-          <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-        </Form.Group>
-        <Form.Group as={Col} md="4" controlId="validationCustomUsername">
-          <Form.Label>Email</Form.Label>
-          <InputGroup hasValidation>
-            <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
-            <Form.Control
-              size="lg"
-              type="text"
-              placeholder="email"
-              aria-describedby="inputGroupPrepend"
-              required
-              value={newAuthor.email}
-              onChange={(e) => setNewAuthor({ ...newAuthor, email: e.target.value })}
-            />
-            <Form.Control.Feedback type="invalid">
-              Please choose a username.
-            </Form.Control.Feedback>
-          </InputGroup>
-        </Form.Group>
-      
-        <Form.Group as={Col} md="4" controlId="validationCustom01">
-          <Form.Label>Data di nascita</Form.Label>
-          <Form.Control
-            size="lg"
-            required
-            type="date"
-            value={newAuthor.dataNascita}
-            onChange={(e) => setNewAuthor({ ...newAuthor, dataNascita: e.target.value })}
-          />
-          <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-        </Form.Group>
-
-        <Form.Group as={Col} md="4" controlId="validationCustom02">
-          <Form.Label>Avatar</Form.Label>
-          <Form.Control
-            size="lg"
-            required
-            type="text"
-            placeholder="URL immagine"
-            value={newAuthor.avatar}
-            onChange={(e) => setNewAuthor({ ...newAuthor, avatar: e.target.value })}
-          />
-          <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-        </Form.Group>
-        
-      </Row>
-      <Form.Group className="d-flex mt-3 justify-content-end">
-        <Button type="reset" size="lg" variant="outline-dark">
-            Reset
-        </Button>
-        <Button
-            type="submit"
-            size="lg"
-            variant="dark"
-            style={{
-              marginLeft: "1em",
-            }}
-          >
-            Invia
-        </Button>
-      </Form.Group>
-      </Form>
-
       {/*INIZIO FORM PER CREARE UN POST*/}
 
       <Form className="mt-5" onSubmit={handleSubmit}>
@@ -250,8 +161,9 @@ const NewBlogPost = (setAuthors, authors) => {
                 aria-describedby="inputGroupPrepend"
                 name="authorEmail"
                 value={post.authorEmail}
-                onChange={handleChange}
-                required
+                //onChange={handleChange} non ci serve piu
+                //required
+                readOnly
               />
               <Form.Control.Feedback type="invalid">
                 Please choose a username.

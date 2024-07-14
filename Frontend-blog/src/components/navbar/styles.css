@@ -14,7 +14,8 @@
 .blog-navbar-add-button {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  width: 160px;
+  justify-content: center;
+  width: 140px;
   text-decoration: none;
+  margin-left: 5px;
 }

@@ -10,28 +10,36 @@ const Home = () => {
  
   const [posts, setPosts] = useState([]);
   const [search, setSearch] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
 
   // Effect hook per fetchare i post quando il componente viene montato
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        // Effettua una richiesta GET al backend per ottenere tutti i post
-        const response = await getPosts();
-        // Aggiorna lo stato con i dati dei post
-        setPosts(response.data);
-      } catch (error) {
-        // Logga eventuali errori nella console
-        console.error("Errore nella fetch del post:", error);
-      }
-    };
-    // Chiamiamo la funzione fetchPosts
-    fetchPosts();
-  }, []);
 
+  const checkAuthAndFetchUserData = async () => {
+    const token = localStorage.getItem("token"); // Recupera il token di autenticazione dalla memoria locale
+    if (token) {
+      setIsLoggedIn(true); // Imposta lo stato di autenticazione a true
+      try {
+        const response = await getPosts();
+          // Aggiorna lo stato con i dati dei post
+          setPosts(response.data);
+      } catch (error) {
+        console.error("Errore nel recupero dei dati utente:", error); // Logga l'errore in console
+        setIsLoggedIn(false); // Imposta lo stato di autenticazione a false
+      }
+    } else {
+      setIsLoggedIn(false); // Imposta lo stato di autenticazione a false
+    }
+  };
+
+  checkAuthAndFetchUserData(); // Verifica l'autenticazione e carica i dati dell'utente
+}, []);
 
   return (
     <Container fluid="sm">
+      {isLoggedIn ? (
+        <>
       <form className="mt-5">
         <input className='ms-2'
           placeholder='Cerca per titoli:'
@@ -75,9 +83,16 @@ const Home = () => {
             </Link>
           </Col>
         ))}
-      </Row>
+      </Row> </>) : (
+      <>
+        <h2  className="mt-5">Questo è un blog privato,</h2>
+        <h2>se vuoi vedere il contenuto devi fare il login o registrarti!</h2>
+      </>
+      )}
     </Container>
   );
 };
 
 export default Home;
+
+

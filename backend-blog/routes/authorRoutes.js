@@ -60,14 +60,25 @@ router.get("/:id", async (req, res) => {
 
 // Rotta per creare un nuovo utente
 router.post("/", async (req, res) => {
-  const author = new Author(req.body); // Crea un nuovo utente con i dati dal corpo della richiesta
   try {
+    // Crea una nuova istanza di Author con i dati dalla richiesta
+    const author = new Author(req.body);
+
     const newAuthor = await author.save(); // Salva il nuovo utente nel database
-    res.status(201).json(newAuthor); // Risponde con i dati del nuovo utente e uno status 201 (Created)
+
+    // Rimuovi la password dalla risposta per sicurezza
+    const authorResponse = newAuthor.toObject();
+    delete authorResponse.password;
+
+    // Risponde con i dati del nuovo utente e uno status 201 (Created)
+    res.status(201).json(authorResponse); 
   } catch (err) {
+    
     res.status(400).json({ message: err.message }); // Gestisce errori di validazione e risponde con un messaggio di errore
   }
 });
+
+
 
 // Rotta per aggiornare un utente
 router.put("/:id", async (req, res) => {

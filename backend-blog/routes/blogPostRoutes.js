@@ -5,6 +5,7 @@ import BlogPost from "../models/BlogPost.js"; // Importa il modello author
 import cors from 'cors'
 import upload from "../middlewares/upload.js";
 import { v2 as cloudinary} from "cloudinary";
+import { authMiddleware } from "../middlewares/authMiddleware.js"; // Middleware di autenticazione
 
 //import controlloMail from "../middlewares/controlloMail.js"  //Questa roba se vuoi fare un controllo della mail o di un altro dato
 
@@ -16,6 +17,7 @@ import { sendEmail } from "../services/emailServices.js";
 const router = express.Router(); // Crea un router Express
 
 //router.use(controlloMail);
+
 
 //Rotta per ottenere tutti i Post dei blog
 router.get("/", async (req, res) => {
@@ -72,6 +74,10 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({ message: err.message }); // Gestisce errori e risponde con un messaggio di errore
   }
 });
+
+// Da qui si proteggono le altre rotte con il middleware di autenticazione
+router.use(authMiddleware);
+
 
 // Rotta per creare un nuovo utente
 //router.post("/", async (req, res) => {
