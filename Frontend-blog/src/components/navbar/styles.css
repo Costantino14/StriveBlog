@@ -11,6 +11,11 @@
   box-shadow: 2px 0px 4px 1px rgba(222, 222, 222, 1);
 }
 
+.dropdownItem {
+  width: 250px;
+  font-size: large;
+}
+
 .blog-navbar-add-button {
   display: flex;
   align-items: center;

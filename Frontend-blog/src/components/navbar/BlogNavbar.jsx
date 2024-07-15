@@ -4,18 +4,33 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { useState, useEffect } from "react";
 import "./styles.css";
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
 
 
-const NavBar = (props) => {
+
+const NavBar = (listAuthors) => {
   
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+
+  const data = localStorage.getItem("data");
+  const list = listAuthors.listAuthors;
+  const foundAuthor = list.find(author => author.email.toLowerCase() === data.toLowerCase());
+  const nome = foundAuthor ? foundAuthor.nome : '';
+  console.log(nome)
+
+// 
+
+
+  
 
   useEffect(() => {
     // Controlla se esiste un token nel localStorage
     const checkLoginStatus = () => {
       const token = localStorage.getItem("token");
       setIsLoggedIn(!!token);
+      
     };
 
     // Controlla lo stato di login all'avvio
@@ -46,22 +61,11 @@ const NavBar = (props) => {
         
 {isLoggedIn ? (
   <div className="d-flex">
-    <Button as={Link} to="/new" className="blog-navbar-add-button bg-dark" size="lg">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            className="bi bi-plus-lg"
-            viewBox="0 0 16 16"
-          >
-            <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z" />
-          </svg>
-          Nuovo Articolo
-        </Button>
-      <Button onClick={handleLogout} className="blog-navbar-add-button bg-dark" size="lg">
-        Logout
-      </Button>
+    <DropdownButton variant="dark" size="lg" title={`Benvenuto ${nome}`}>
+      <Dropdown.Item className="dropdownItem" as={Link} to="/new" size="lg">+ Crea Articolo</Dropdown.Item>
+      <Dropdown.Item className="dropdownItem" as={Link} to="/profile" size="lg">Profilo</Dropdown.Item>
+      <Dropdown.Item className="dropdownItem" onClick={handleLogout} size="lg">LogOut</Dropdown.Item>
+    </DropdownButton>
   </div>
 ) : (
   <div className="d-flex">

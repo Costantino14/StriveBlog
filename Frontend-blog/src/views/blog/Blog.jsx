@@ -6,7 +6,9 @@ import { addComment, getComments, getPost } from "../../services/api";
 import "./styles.css";
 import { AiOutlineComment } from "react-icons/ai";
 
-const Blog = props => {
+const Blog = (listAuthors) => {
+
+  console.log(listAuthors)
 
 
   const [commentsOn, setCommentsOn] = useState(false)

@@ -19,6 +19,10 @@ export default function Login() {
     e.preventDefault(); // Previene il comportamento predefinito del form di ricaricare la pagina
     try {
       const response = await loginUser(formData); // Chiama la funzione loginUser per autenticare l'utente
+      
+      //Prova mia
+      localStorage.setItem("data", formData.email)
+
       localStorage.setItem("token", response.token); // Memorizza il token di autenticazione nel localStorage
       // Trigger l'evento storage per aggiornare la Navbar
       window.dispatchEvent(new Event("storage")); // Scatena un evento di storage per aggiornare componenti come la Navbar
