@@ -7,6 +7,7 @@ const Footer = (props) => {
       style={{
         paddingTop: 50,
         paddingBottom: 50,
+        backgroundColor: "#D6BD98",
       }}
     >
       <Container>{`${new Date().getFullYear()} - © Strive School | Developed for homework projects.`}</Container>

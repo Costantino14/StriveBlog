@@ -1,13 +1,37 @@
-import { useState } from "react"; // Importa il hook useState da React per gestire lo stato
-import { useNavigate } from "react-router-dom"; // Importa useNavigate da react-router-dom per navigare programmaticamente
+import { useState, useEffect } from "react"; // Importa il hook useState da React per gestire lo stato
+import { useNavigate, useLocation } from "react-router-dom"; // Importa useNavigate da react-router-dom per navigare programmaticamente
 import { loginUser } from "../../services/api"; // Importa la funzione API per effettuare il login
+
 
 export default function Login() {
   const [formData, setFormData] = useState({
     email: "", // Stato iniziale del campo email
     password: "", // Stato iniziale del campo password
   });
-  const navigate = useNavigate(); // Inizializza il navigatore per cambiare pagina
+
+    // Inizializziamo gli hooks di react-router-dom
+const navigate = useNavigate(); // Per navigare programmaticamente
+const location = useLocation(); // Per accedere ai parametri dell'URL corrente
+
+useEffect(() => {
+  // Questo effect viene eseguito dopo il rendering del componente
+  // e ogni volta che location o navigate cambiano
+
+  // Estraiamo i parametri dall'URL
+  const params = new URLSearchParams(location.search);
+  // Cerchiamo un parametro 'token' nell'URL
+  const token = params.get("token");
+
+  if (token) {
+    // Se troviamo un token, lo salviamo nel localStorage
+    localStorage.setItem("token", token);
+    // Dispatchamo un evento 'storage' per aggiornare altri componenti che potrebbero dipendere dal token
+    window.dispatchEvent(new Event("storage"));
+    // Navighiamo alla home page
+    navigate("/");
+  }
+}, [location, navigate]);
+
 
   // Gestore del cambiamento degli input del form
   const handleChange = (e) => {
@@ -34,6 +58,12 @@ export default function Login() {
     }
   };
 
+
+const handleGoogleLogin = () => {
+  // Reindirizziamo l'utente all'endpoint del backend che inizia il processo di autenticazione Google
+  window.location.href = "http://localhost:5001/api/auth/google";
+};
+
   return (
     <div className="container"  style={{marginTop: 150}}>
       <h2>Login</h2>
@@ -54,6 +84,9 @@ export default function Login() {
         />
         <button type="submit">Accedi</button>
       </form>
+      
+      <button onClick={handleGoogleLogin}>Accedi con Google</button>
+
     </div>
   );
 }

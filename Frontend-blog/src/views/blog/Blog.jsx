@@ -5,6 +5,7 @@ import BlogLike from "../../components/likes/BlogLike";
 import { addComment, getComments, getPost } from "../../services/api";
 import "./styles.css";
 import { AiOutlineComment } from "react-icons/ai";
+import _ from 'lodash';
 
 const Blog = (listAuthors) => {
 
@@ -81,6 +82,17 @@ const Blog = (listAuthors) => {
     setCommentsOn(!commentsOn)
   }
 
+  const [columnText, setColumnText] = useState([]);
+
+  useEffect(() => {
+    if (post && post.content) {
+      const words = post.content.split(' ');
+      const wordsPerColumn = Math.ceil(words.length / 3);
+      const columns = _.chunk(words, wordsPerColumn);
+      setColumnText(columns);
+    }
+  }, [post]);
+
   // Se il post non è ancora stato caricato, mostra un messaggio di caricamento
   if (!post) return <div>Caricamento...</div>;
 
@@ -115,10 +127,14 @@ const Blog = (listAuthors) => {
             </div>
           </div>
 
-          <div className="my-5">
-             {post.content} 
-          </div>
-          <div className="d-flex">
+          <div className="columnsContainer">
+          {columnText.map((column, index) => (
+            <div key={index} className="textColumn">
+              {column.join(' ')}
+            </div>
+          ))}
+        </div>
+          <div className="d-flex mt-5">
             <BlogLike defaultLikes={["123"]} onChange={console.log} />
             <Button
         variant={"dark"}
@@ -196,7 +212,7 @@ const Blog = (listAuthors) => {
                   type="submit"
                   size="lg"
                   variant="dark"
-                  style={{marginTop: "2em"}}
+                  style={{marginTop: "2em", marginBottom: "2em"}}
                   >
                   Aggiungi
                 </Button>
