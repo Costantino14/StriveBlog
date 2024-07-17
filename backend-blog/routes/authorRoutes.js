@@ -100,7 +100,7 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const deleteAuthor = await Author.findByIdAndDelete(req.params.id); // Elimina un utente per ID
-    if(!deletePost) {
+    if(!deleteAuthor) {
       return res.status(404).json({ message: "Post non trovato" }); // Se l'utente non esiste, risponde con un errore 404
     } else {
     res.json({ message: "Autore Cancellato Dalla Lista" }); // Risponde con un messaggio di conferma

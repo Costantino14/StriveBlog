@@ -6,14 +6,16 @@ import dotenv from 'dotenv';
 import authorRoutes from './routes/authorRoutes.js'; // Importa le rotte
 import blogPostRoutes from './routes/blogPostRoutes.js';
 import cors from 'cors';
-
-import path from 'path';
-import { fileURLToPath } from "url"; // UPLOAD Per convertire URL in percorsi di file
-
 import authRoutes from "./routes/authRoutes.js"; // Rotte per l'autenticazione
+import session from "express-session"; // NEW! Importiamo session
+import passport from "./Config/passportConfig.js"; // NEW! importiamo passport
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+//non più in uso
+
+//import path from 'path';
+//import { fileURLToPath } from "url"; // UPLOAD Per convertire URL in percorsi di file
+//const __filename = fileURLToPath(import.meta.url);
+//const __dirname = path.dirname(__filename);
 
 import { authorizedHandler, badRequestHandler, genericErrorHandler, notFoundHandler } from './middlewares/errorHandlers.js'
 
@@ -25,20 +27,39 @@ dotenv.config();
 // Inizializza l'app Express
 const app = express();
 
+app.use(cors());
 // Middleware per il parsing del corpo delle richieste JSON
 app.use(express.json());
 
-app.use(cors());
 
 //app.use("/uploads", express.static(path.join(__dirname, "uploads"))) //si usa nel vecchio metodo
+
+app.use(
+  session({
+    // Il 'secret' è usato per firmare il cookie di sessione
+    // È importante che sia una stringa lunga, unica e segreta
+    secret: process.env.SESSION_SECRET,
+
+    // 'resave: false' dice al gestore delle sessioni di non
+    // salvare la sessione se non è stata modificata
+    resave: false,
+
+    // 'saveUninitialized: false' dice al gestore delle sessioni di non
+    // creare una sessione finché non memorizziamo qualcosa
+    // Aiuta a implementare le "login sessions" e riduce l'uso del server di memorizzazione
+    saveUninitialized: false,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Connessione a MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connesso'))
   .catch((err) => console.error('MongoDB: errore di connessione.', err));
 
-// Definizione della porta su cui il server ascolterà
-const PORT = process.env.PORT || 5000;
+
 
 // Endpoint di base per testare il server
 app.get('/', (req, res) => {
@@ -50,11 +71,16 @@ app.use("/api/auth", authRoutes);
 app.use('/api/author', authorRoutes);
 app.use('/api/blogPost', blogPostRoutes);
 
+// Definizione della porta su cui il server ascolterà
+const PORT = process.env.PORT || 5000;
+
 
 app.use(badRequestHandler);
 app.use(authorizedHandler);
 app.use(notFoundHandler);
 app.use(genericErrorHandler);
+
+
 
 // Avvio del server
 app.listen(PORT, () => {

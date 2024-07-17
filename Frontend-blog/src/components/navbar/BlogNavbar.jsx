@@ -15,6 +15,7 @@ const NavBar = (listAuthors) => {
   const navigate = useNavigate();
 
   const data = localStorage.getItem("data");
+  console.log(data)
   const list = listAuthors.listAuthors;
   const foundAuthor = list.find(author => author.email.toLowerCase() === data.toLowerCase());
   const nome = foundAuthor ? foundAuthor.nome : '';

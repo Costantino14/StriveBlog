@@ -3,7 +3,7 @@ import bcrypt from "bcrypt"; // NEW!
 
 
 // Definizione dello schema dell'utente utilizzando il costruttore Schema di Mongoose
-const authorSchema = new Schema(
+const authorSchema = new mongoose.Schema(
   {
     // Campo 'nome' di tipo String obbligatorio (required)
     nome: {type: String, required: true },
@@ -11,11 +11,13 @@ const authorSchema = new Schema(
     cognome: {type: String,required: true },
     // Campo 'email' di tipo String obbligatorio e unico (unique)
     email: {type: String, required: true, unique: true },
-    // Campo 'data di nascita' di tipo String
-    dataNascita: {type: String },
      // Campo 'avatar' di tipo String 
-    avatar: {type: String, required: true },
-    password: { type: String, required: true },
+     avatar: {type: String },
+      // Campo 'data di nascita' di tipo String
+    dataNascita: {type: String },
+    password: { type: String },
+    googleId: { type: String },
+
   },
   {
     // Opzioni dello schema:
