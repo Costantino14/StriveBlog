@@ -64,6 +64,11 @@ const handleGoogleLogin = () => {
   window.location.href = "http://localhost:5001/api/auth/google";
 };
 
+const handleGitHubLogin = () => {
+  // Reindirizziamo l'utente all'endpoint del backend che inizia il processo di autenticazione Google
+  window.location.href = "http://localhost:5001/api/auth/github";
+};
+
   return (
     <div className="container"  style={{marginTop: 150}}>
       <h2>Login</h2>
@@ -86,6 +91,7 @@ const handleGoogleLogin = () => {
       </form>
       
       <button onClick={handleGoogleLogin}>Accedi con Google</button>
+      <button onClick={handleGitHubLogin}>Accedi con GitHub</button>
 
     </div>
   );

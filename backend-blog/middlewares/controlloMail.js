@@ -1,4 +1,7 @@
-const controlloMail = (req, res, next) => {
+// Questo del controllo Mail non era nel compito ma l'ho inserito nel codice cmq, per esercitarmi
+
+
+const controllMail = (req, res, next) => {
     const mail = 'autorizzato@gmail.com'
     const mailUtente = req.headers['user-email'];
 
@@ -9,4 +12,4 @@ const controlloMail = (req, res, next) => {
     }
 }
 
-export default controlloMail; 
+export default controllMail; 

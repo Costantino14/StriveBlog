@@ -8,15 +8,16 @@ const authorSchema = new mongoose.Schema(
     // Campo 'nome' di tipo String obbligatorio (required)
     nome: {type: String, required: true },
     // Campo 'cognome' di tipo String obbligatorio (required)
-    cognome: {type: String,required: true },
+    cognome: {type: String },
     // Campo 'email' di tipo String obbligatorio e unico (unique)
-    email: {type: String, required: true, unique: true },
+    email: {type: String, unique: true },
      // Campo 'avatar' di tipo String 
      avatar: {type: String },
       // Campo 'data di nascita' di tipo String
     dataNascita: {type: String },
     password: { type: String },
     googleId: { type: String },
+    githubId: { type: String },
 
   },
   {

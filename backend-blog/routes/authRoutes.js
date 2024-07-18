@@ -82,4 +82,22 @@ router.get('/google/callback',
   }
 );
 
+
+// Rotta per iniziare il processo di autenticazione GitHub
+router.get('/github', passport.authenticate('github', { scope: ['user:email'] }));
+
+router.get('/github/callback', 
+  passport.authenticate('github', { failureRedirect: '/login' }),
+  
+  async (req, res) => {
+    try {
+      const token = await generateJWT({ id: req.user._id });
+      res.redirect(`http://localhost:3000/login?token=${token}`);
+    } catch (error) {
+      console.error('Errore nella generazione del token:', error);
+      res.redirect('/login?error=auth_failed');
+    }
+  }
+);
+
 export default router;

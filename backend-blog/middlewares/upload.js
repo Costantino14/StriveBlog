@@ -1,3 +1,5 @@
+// QUESTO è IL VECCHIO METTODO, DICIAMO "MANUALE" PER CONSERVARE LE FOTO CARICATE, USO CLOUDINARY NEL PROGETTO
+
 import multer from 'multer';
 import path from 'path';
 
