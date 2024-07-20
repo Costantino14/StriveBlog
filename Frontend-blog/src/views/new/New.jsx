@@ -7,13 +7,6 @@ import { createPost, getMe } from "../../services/api";
 
 const NewBlogPost = (setAuthors, authors) => {
 
-   /* PARTE POST AUTORI */
-  
-  // Stato per gestire i dati del nuovo utente da creare
-   
-
-  /* PARTE POST BLOG*/
-
   const [coverFile, setCoverFile] = useState();
 
   const [post, setPost] = useState({
@@ -73,7 +66,7 @@ const NewBlogPost = (setAuthors, authors) => {
     }
   };
 
-// NEW! useEffect per l'autenticazione
+// UseEffect per l'autenticazione
 useEffect(() => {
   const fetchUserEmail = async () => {
     try {
@@ -92,9 +85,7 @@ useEffect(() => {
 
   return (
     <Container className="new-blog-container">
-      <h2 className="mt-5">Autore</h2>
-      {/*INIZIO FORM PER CREARE UN POST*/}
-
+      
       <Form className="mt-5" onSubmit={handleSubmit}>
         <h2>Articolo</h2>
         <Form.Group controlId="blog-form" className="mt-3">
@@ -181,7 +172,7 @@ useEffect(() => {
             required
           />
         </Form.Group>
-        <Form.Group className="d-flex mt-3 justify-content-end">
+        <Form.Group className="d-flex my-5 justify-content-end">
           <Button type="reset" size="lg" variant="outline-dark">
             Reset
           </Button>
@@ -189,9 +180,7 @@ useEffect(() => {
             type="submit"
             size="lg"
             variant="dark"
-            style={{
-            marginLeft: "1em",
-            }}
+            className="new-blog-button"
           >
             Invia
           </Button>

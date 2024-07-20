@@ -11,9 +11,8 @@ const Home = () => {
   const [posts, setPosts] = useState([]);
   const [search, setSearch] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-
-  
+  const [loaded, setLoaded] = useState(false);
+ 
 
   // Effect hook per fetchare i post quando il componente viene montato
   useEffect(() => {
@@ -26,6 +25,7 @@ const Home = () => {
         const response = await getPosts();
           // Aggiorna lo stato con i dati dei post
           setPosts(response.data);
+          setLoaded(true); 
       } catch (error) {
         console.error("Errore nel recupero dei dati utente:", error); // Logga l'errore in console
         setIsLoggedIn(false); // Imposta lo stato di autenticazione a false
@@ -40,7 +40,12 @@ const Home = () => {
 
   return (
     <Container fluid="sm">
-      {isLoggedIn ? (
+      {!isLoggedIn ? (
+      <>
+        <h2  className="mt-5">Questo è un blog privato,</h2>
+        <h2>se vuoi vedere il contenuto devi fare il login o registrarti!</h2>
+      </>
+      ) : (
         <>
       <form className="mt-5">
         <input className='ms-2'
@@ -60,9 +65,8 @@ const Home = () => {
             xs={12}
             md={6}
             lg={4}
-            style={{
-              marginBottom: 50,
-            }}
+            
+            className={`blog-coll ${loaded ? "fade-in" : ""}`}
           >
             <Link to={`/blog/${post._id}`} className="blog-link">
               <Card className="blog-card">
@@ -85,12 +89,7 @@ const Home = () => {
             </Link>
           </Col>
         ))}
-      </Row> </>) : (
-      <>
-        <h2  className="mt-5">Questo è un blog privato,</h2>
-        <h2>se vuoi vedere il contenuto devi fare il login o registrarti!</h2>
-      </>
-      )}
+      </Row> </>)}
     </Container>
   );
 };

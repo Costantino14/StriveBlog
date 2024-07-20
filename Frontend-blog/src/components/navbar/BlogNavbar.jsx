@@ -13,12 +13,17 @@ const NavBar = (listAuthors) => {
   
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+  let nome = "User"
 
   const data = localStorage.getItem("data");
   console.log(data)
-  const list = listAuthors.listAuthors;
-  const foundAuthor = list.find(author => author.email.toLowerCase() === data.toLowerCase());
-  const nome = foundAuthor ? foundAuthor.nome : '';
+  
+  if (data) {
+    const list = listAuthors.listAuthors;
+    const foundAuthor = list.find(author => author.email.toLowerCase() === data.toLowerCase());
+    nome = foundAuthor ? foundAuthor.nome : 'User';
+  } 
+  
   console.log(nome)
 
 // 

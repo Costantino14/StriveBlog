@@ -77,11 +77,14 @@
   border: 1px solid grey
 }
 
-/* ... (mantenere il resto del CSS esistente) ... */
+.button-blog {
+  margin: 50px 0;
+}
+
 
 .columnsContainer {
   display: flex;
-  flex-direction: column; /* Default a colonna per dispositivi mobili */
+  flex-direction: column;
   margin-top: 20px;
   position: relative;
   z-index: 1;

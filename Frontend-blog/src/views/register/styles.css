@@ -1,0 +1,23 @@
+#contenitore-register {
+    margin-top: 150px;
+    margin-bottom: 100px;
+}
+
+.card-register.mt-5 {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  .card-header-register {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e3e6f0;
+  }
+  
+  .form-label-register {
+    font-weight: bold;
+  }
+  
+
+
+  .button-register {
+    margin-left: 1em;
+  }
