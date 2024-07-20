@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, Col, Image, Container, Row } from "react-bootstrap";
-import "./styles.css";
-import { getPosts } from "../../services/api";
+import "./style.css";
+import { getPosts } from "../services/api";
 import { Link } from "react-router-dom";
 
 

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Button, Col, Container, Form, Image, ListGroup, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import BlogLike from "../../components/likes/BlogLike";
-import { addComment, getComments, getPost } from "../../services/api";
-import "./styles.css";
+import BlogLike from "../components/likes/BlogLike";
+import { addComment, getComments, getPost } from "../services/api";
+import "./style.css";
 import { AiOutlineComment } from "react-icons/ai";
 import _ from 'lodash';
 

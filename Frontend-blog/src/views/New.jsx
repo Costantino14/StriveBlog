@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Button, Container, Form, InputGroup, Row , Col} from "react-bootstrap";
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import "./styles.css";
+import "./style.css";
 import { useNavigate } from "react-router-dom";
-import { createPost, getMe } from "../../services/api";
+import { createPost, getMe } from "../services/api";
 
 const NewBlogPost = (setAuthors, authors) => {
 

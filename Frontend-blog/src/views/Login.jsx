@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { loginUser, getUserData } from "../../services/api";
-import { Container, Row, Col, Form, Button, Tab, Tabs } from "react-bootstrap";
+import { loginUser, getUserData } from "../services/api";
+import { Container, Row, Col, Form, Button,} from "react-bootstrap";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import "./style.css";
 

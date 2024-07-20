@@ -1,14 +1,14 @@
 import NavBar from "./components/navbar/BlogNavbar";
 import Footer from "./components/footer/Footer";
-import Home from "./views/home/Home";
-import Blog from "./views/blog/Blog";
-import NewBlogPost from "./views/new/New";
+import Home from "./views/Home";
+import Blog from "./views/Blog";
+import NewBlogPost from "./views/New";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Register from "./views/register/Register.jsx";
-import Login from "./views/login/Login.jsx";
+import Register from "./views/Register.jsx";
+import Login from "./views/Login.jsx";
 import { useEffect, useState } from "react";
 import { getAuthors } from "./services/api.jsx";
-import Profile from "./views/profile/Profile.jsx";
+import Profile from "./views/Profile.jsx";
 
 
 
