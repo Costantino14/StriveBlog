@@ -1,21 +1,9 @@
-/*STYLE BLOG*/
 
-.blog-details-cover {
-    width: 100%;
-    border-radius: 10px;
-    margin-bottom: 50px;
-    max-height: 70vh;
-    object-fit: cover;
-    object-position: 0% 0%;
-    margin-top: 50px;
-    filter: sepia(30%) contrast(90%) brightness(90%) grayscale(20%);
-  }
   
-  .blog-details-root {
+  .root {
     display: flex;
     width: 100%;
     flex-direction: column;
-    margin-top: 100px;
     background-color: #40534C; /* Colore base simile alla carta vecchia */
     position: relative;
     color: #D6BD98;
@@ -23,7 +11,7 @@
     box-shadow: inset 0 0 100px rgba(0,0,0,0.1);
   }
   
-  .blog-details-root::before {
+  .root::before {
     content: "";
     position: absolute;
     top: 0;
@@ -36,7 +24,7 @@
     pointer-events: none;
   }
   
-  .blog-details-root::after {
+  .root::after {
     content: "";
     position: absolute;
     top: 0;
@@ -49,14 +37,19 @@
     background-position: 0 0, 30px 30px;
     pointer-events: none;
   }
-  
-  
-  .blog-details-title {
-    margin-top: 50px;
-    font-weight: bold;
-    font-size: 80px;
-    color: #D6BD98;
-  }
+
+  /*STYLE BLOG*/
+
+.blog-details-cover {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 50px;
+  max-height: 70vh;
+  object-fit: cover;
+  object-position: 0% 0%;
+  margin-top: 50px;
+  filter: sepia(30%) contrast(90%) brightness(90%) grayscale(20%);
+}
   
   .blog-details-container {
     display: flex;
@@ -114,14 +107,16 @@
   
   /* Aggiungiamo anche responsività al titolo */
   .blog-details-title {
-    margin-top: 50px;
+    margin-top: 150px;
     font-weight: bold;
     font-size: 40px; /* Dimensione di base più piccola per mobile */
+    color: #D6BD98;
   }
   
   @media screen and (min-width: 768px) {
     .blog-details-title {
       font-size: 60px; /* Aumenta la dimensione per tablet */
+
     }
   }
   
@@ -143,7 +138,6 @@
     font-weight: bold;
     margin-top: 50px;
     margin-bottom: 50px;
-    color: #134c31e2;
   }
   
   .blog-coll {
@@ -223,18 +217,22 @@
   #contenitore-register {
     margin-top: 150px;
     margin-bottom: 100px;
+    background-color: transparent;
   }
   
   .card-register.mt-5 {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border: transparent;
+    background-color: transparent;
+
   }
   
+
   .card-header-register {
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #e3e6f0;
+    color: #D6BD98;
   }
   
   .form-label-register {
+    color: #D6BD98;
     font-weight: bold;
   }
   

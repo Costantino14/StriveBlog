@@ -40,9 +40,10 @@ const Register = () => {
   }; 
 
   return (
+    <body className="root">
     <Container id="contenitore-register">
       <Card className="card-register mt-5">
-        <Card.Header className="card-header-register" as="h2">Registrazione</Card.Header>
+        <h2 className="card-header-register">Registrazione</h2>
         <Card.Body>
       <Form onSubmit={handleSubmit} id="form"> 
         <Row>
@@ -144,7 +145,7 @@ const Register = () => {
         </Card.Body>
       </Card>
     </Container>
-
+    </body>
       
   );
 }

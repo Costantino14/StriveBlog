@@ -79,7 +79,7 @@ const Blog = ({ listAuthors }) => {
   if (!post) return <div>Caricamento...</div>;
 
   return (
-    <div className="blog-details-root">
+    <body className="root">
       <Container>
         <h1 className="blog-details-title">{post.title}</h1>
         <Image className="blog-details-cover" src={post.cover} fluid />
@@ -179,7 +179,7 @@ const Blog = ({ listAuthors }) => {
           </Button>
         </Form>
       </Container>
-    </div>
+    </body>
   );
 };
 

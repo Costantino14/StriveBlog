@@ -70,6 +70,7 @@ export default function Login() {
   };
 
   return (
+    <body className="root">
     <Container className="mt-5">
       <Row className="row-login">
         <Col md={6} className="d-none d-md-block">
@@ -109,5 +110,6 @@ export default function Login() {
         </Col>
       </Row>
     </Container>
+    </body>
   );
 }

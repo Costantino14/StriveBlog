@@ -84,8 +84,8 @@ useEffect(() => {
  
 
   return (
+    <body className="root">
     <Container className="new-blog-container">
-      
       <Form className="mt-5" onSubmit={handleSubmit}>
         <h2>Articolo</h2>
         <Form.Group controlId="blog-form" className="mt-3">
@@ -187,6 +187,7 @@ useEffect(() => {
         </Form.Group>
       </Form>
     </Container>
+    </body>
   );
 };
 

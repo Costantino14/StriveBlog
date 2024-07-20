@@ -39,6 +39,7 @@ const Home = () => {
 }, []);
 
   return (
+    <body className="root">
     <Container fluid="sm">
       {!isLoggedIn ? (
       <>
@@ -91,6 +92,7 @@ const Home = () => {
         ))}
       </Row> </>)}
     </Container>
+    </body>
   );
 };
 
