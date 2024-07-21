@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Container, Navbar } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { useState, useEffect } from "react";
 import "./styles.css";
@@ -13,10 +13,11 @@ const NavBar = (listAuthors) => {
   
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
   let nome = "User"
 
   const data = localStorage.getItem("data");
-  console.log(data)
   
   if (data) {
     const list = listAuthors.listAuthors;
@@ -26,10 +27,6 @@ const NavBar = (listAuthors) => {
   
   console.log(nome)
 
-// 
-
-
-  
 
   useEffect(() => {
     // Controlla se esiste un token nel localStorage
@@ -49,12 +46,18 @@ const NavBar = (listAuthors) => {
     return () => {
       window.removeEventListener("storage", checkLoginStatus);
     };
-  }, []);
+  }, [data]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("data");
     setIsLoggedIn(false);
-    navigate("/");
+    if (location.pathname === ("/")) {
+      window.location.reload();
+    } else {
+      navigate("/")
+    }
+    
   };
 
 
@@ -65,7 +68,7 @@ const NavBar = (listAuthors) => {
           <img className="blog-navbar-brand" alt="logo" src={logo} />
         </Navbar.Brand>
         
-{isLoggedIn ? (
+{isLoggedIn && data ? (
   <div className="d-flex">
     <DropdownButton variant="dark" size="lg" title={`Benvenuto ${nome}`}>
       <Dropdown.Item className="dropdownItem" as={Link} to="/new" size="lg">+ Crea Articolo</Dropdown.Item>

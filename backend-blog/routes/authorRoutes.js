@@ -76,12 +76,12 @@ router.post('/', cloudinaryUploader.single('avatar'), async (req,res) => {
 
     // CODICE PER INVIO MAIL con MAILGUN
     const htmlContent = `
-      <h1>Grazie per esserti reggistrato!</h1>
+      <h1>Grazie per esserti registrato!</h1>
     `;
 
     await sendEmail(
       newAuthor.email, 
-      "Ti sei reggistrato correttamente",
+      "Ti sei registrato correttamente",
       htmlContent
     );
 
