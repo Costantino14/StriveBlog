@@ -7,7 +7,7 @@ import upload from "../middlewares/upload.js";
 import { v2 as cloudinary} from "cloudinary";
 import { authMiddleware } from "../middlewares/authMiddleware.js"; // Middleware di autenticazione
 
-//import controlloMail from "../middlewares/controlloMail.js"  //Questa roba se vuoi fare un controllo della mail o di un altro dato
+//import controlloMail from "../middlewares/controlloMail.js"  //Questa serve per fare un controllo della mail o di un altro dato
 
 //Import di Cloudinary
 import cloudinaryUploader from "../Config/cloudinaryConfig.js"
@@ -79,7 +79,7 @@ router.get("/:id", async (req, res) => {
 router.use(authMiddleware);
 
 
-// Rotta per creare un nuovo utente
+// Rotta per creare un nuovo post
 //router.post("/", async (req, res) => {
 //  const blogPost = new BlogPost(req.body); // Crea un nuovo utente con i dati dal corpo della richiesta
 //  try {
@@ -126,7 +126,7 @@ router.use(authMiddleware);
   }
 })
 
-// Rotta per aggiornare un utente
+// Rotta per aggiornare un post
 router.put("/:id", async (req, res) => {
   try {
     const updatedBlogPost = await BlogPost.findByIdAndUpdate(req.params.id, req.body, {
@@ -143,7 +143,7 @@ router.put("/:id", async (req, res) => {
 });
 
 
-// Rotta per eliminare un utente
+// Rotta per eliminare un post
 router.delete("/:id", async (req, res) => {
   try {
 

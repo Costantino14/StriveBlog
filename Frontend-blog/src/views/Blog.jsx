@@ -2,24 +2,32 @@ import React, { useEffect, useState } from "react";
 import { Button, Col, Container, Form, Image, ListGroup, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import BlogLike from "../components/likes/BlogLike";
-import { addComment, getComments, getPost } from "../services/api";
+import ModalComment from "../components/ModalComment"
+import { addComment, deleteComment, getComments, getPost } from "../services/api";
 import "./style.css";
-import { AiOutlineComment } from "react-icons/ai";
+import { AiOutlineComment,} from "react-icons/ai";
+import { HiOutlineTrash } from "react-icons/hi";
+
 import _ from 'lodash';
 
 const Blog = ({ listAuthors }) => {
+  
+  const { id } = useParams();
+  const emailLogin = localStorage.getItem("data");
+
   const [commentsOn, setCommentsOn] = useState(false);
   const [post, setPost] = useState(null);
   const [author, setAuthor] = useState(null);
   const [comments, setComments] = useState([]);
+  const [columnText, setColumnText] = useState([]);
+  const [chComm, setChComm] = useState({content: ""})
+
   const [newComment, setNewComment] = useState({
     name: "",
-    email: "",
+    email: emailLogin,
     content: "",
   });
-  const [columnText, setColumnText] = useState([]);
 
-  const { id } = useParams();
 
   useEffect(() => {
     const fetchPostAndComments = async () => {
@@ -42,7 +50,7 @@ const Blog = ({ listAuthors }) => {
     };
 
     fetchPostAndComments();
-  }, [id, listAuthors]);
+  }, [id, chComm]);
 
   useEffect(() => {
     if (post && post.content) {
@@ -52,6 +60,10 @@ const Blog = ({ listAuthors }) => {
       setColumnText(columns);
     }
   }, [post]);
+
+  const handleClickBotton = () => {
+     setCommentsOn(!commentsOn);
+  };
 
   const handleCommentChange = (e) => {
     const { name, value } = e.target;
@@ -64,19 +76,44 @@ const Blog = ({ listAuthors }) => {
       await addComment(id, newComment);
       const commentsResponse = await getComments(id);
       setComments(commentsResponse);
-      setNewComment({ name: "", email: "", content: "" });
+      setNewComment({ name: "", email: emailLogin, content: "" });
     } catch (error) {
       console.error("Errore nell'aggiunta del commento:", error);
     }
   };
 
-  const handleClickBotton = () => {
-    setCommentsOn(!commentsOn);
+
+  // Funzione per cancellare uno dei commenti
+  const handleDeleteComment = async (commentId) => {
+    if (!commentId) {
+      console.error("Commento non trovato");
+      return;
+    }
+    try {
+      const response = await deleteComment(id, commentId);
+      if (response) {
+        setComments(prev => prev.filter(comment => comment._id !== commentId));
+      } else {
+        console.error("Errore nella cancellazione del commento, passaggio errato");
+      }
+    } catch (error) {
+      console.error("Errore nella cancellazione del commento:", error.response?.data || error.message);
+    }
   };
 
-  console.log(author)
+  const updateCommentInList = (commentId, updatedContent) => {
+    setComments(prevComments => 
+      prevComments.map(comment => 
+        comment._id === commentId ? {...comment, content: updatedContent} : comment
+      )
+    );
+    setChComm({ content: updatedContent });
+  };
 
-  if (!post) return <div>Caricamento...</div>;
+
+
+
+  if (!post) return <body>Caricamento...</body>;
 
   return (
     <body className="root">
@@ -123,8 +160,18 @@ const Blog = ({ listAuthors }) => {
             <ListGroup as="ul" className="mt-3">
               {comments.length > 0 ? (
                 comments.map((comment) => (
-                  <ListGroup.Item as="li" numbered key={comment._id} className="mt-2">
+                  <ListGroup.Item as="li" numbered key={comment._id} className="comment-dettails">
                     {comment.content}<br /> Utente: {comment.name}
+                    {emailLogin === comment.email && (<div>
+                      <ModalComment 
+                        id={id} 
+                        commentId={comment._id} 
+                        chComm={{ content: comment.content }}
+                        setChComm={setChComm}
+                        updateCommentInList={updateCommentInList}
+                      />
+                    <Button className="ms-1" variant="outline-danger" onClick={() =>handleDeleteComment(comment._id)}><HiOutlineTrash /></Button></div>)}
+                    
                   </ListGroup.Item>
                 ))
               ) : (
@@ -153,8 +200,7 @@ const Blog = ({ listAuthors }) => {
               type="email"
               name="email"
               value={newComment.email}
-              onChange={handleCommentChange}
-              placeholder="La tua email..."
+              readOnly
               required
             />
           </Form.Group>

@@ -91,6 +91,12 @@
     text-align: justify;
     margin-bottom: 20px; /* Spazio tra le colonne quando sono in verticale */
   }
+
+  .comment-dettails {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+  }
   
   /* Media query per schermi più larghi */
   @media screen and (min-width: 768px) {
