@@ -6,17 +6,25 @@ import "./style.css";
 
 
 const Register = () => {
+
+  const [avatarFile, setAvatarFile] = useState();
+
  
   // Definisce lo stato del form con useState, inizializzato con campi vuoti
   const [formData, setFormData] = useState({
     nome: "",
     cognome: "",
     email: "",
-    dataDiNascita: "",
-    avatar: "pippo",
+    dataNascita: "",
     password: "",
     
   });
+
+  //Funzione per caricare il fileCover
+  const handleFileChange = (e) => {
+    setAvatarFile(e.target.files[0]);
+  };
+
 
   const navigate = useNavigate(); // Inizializza useNavigate per poter navigare programmaticamente
 
@@ -30,7 +38,14 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault(); // Previene il comportamento predefinito del form di ricaricare la pagina
     try {
-      await registerUser(formData); // Chiama la funzione registerUser con i dati del form
+      const formDataToSend = new FormData();
+    Object.keys(formData).forEach(key => {
+      formDataToSend.append(key, formData[key]);
+    });
+    if (avatarFile) {
+      formDataToSend.append('avatar', avatarFile);
+    }
+      await registerUser(formDataToSend); // Chiama la funzione registerUser con i dati del form
       alert("Registrazione avvenuta con successo!"); // Mostra un messaggio di successo
       navigate("/login"); // Naviga alla pagina di login dopo la registrazione
     } catch (error) {
@@ -107,10 +122,11 @@ const Register = () => {
             <Form.Control
               size="lg"
               required
-              type="text"
+              type="file"
               placeholder="URL immagine"
               name="avatar"
-              onChange={handleChange}
+              //value={post.cover} non serve più
+              onChange={handleFileChange}
             />
             <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
           </Form.Group>

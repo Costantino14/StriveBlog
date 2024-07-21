@@ -29,7 +29,12 @@ api.interceptors.request.use(
 // Funzioni per le operazioni CRUD di author
 export const getAuthors = () => api.get("/author");
 export const getAuthor = (id) => api.get(`/author/${id}`);
-//export const createAuthor = (authorData) => api.post("/author", authorData);
+export const registerUser = (authorData) => 
+  api.post("/author", authorData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  }); 
 export const updateAuthor = (id, authorData) =>
         api.put(`/author/${id}`, authorData);
 export const deleteAuthor = (id) => api.delete(`/author/${id}`);
@@ -68,8 +73,8 @@ export const deleteComment = (postId, commentId) =>
 
 
 
-// Funzione per registrare un nuovo utente
-export const registerUser = (userData) => api.post("/author", userData);
+
+
 
 // NEW: Funzione per effettuare il login di un utente
 export const loginUser = async (credentials) => {

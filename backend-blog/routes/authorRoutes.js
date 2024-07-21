@@ -3,7 +3,9 @@
 import express from "express"; // Importa il pacchetto Express
 import Author from "../models/Author.js"; // Importa il modello author
 import BlogPost from "../models/BlogPost.js";
+import { v2 as cloudinary} from "cloudinary";
 import cloudinaryUploader from "../Config/cloudinaryConfig.js";
+import { sendEmail } from "../services/emailServices.js";
 
 const router = express.Router(); // Crea un router Express
 
@@ -59,26 +61,38 @@ router.get("/:id", async (req, res) => {
 });
 
 // Rotta per creare un nuovo utente
-router.post("/", async (req, res) => {
+router.post('/', cloudinaryUploader.single('avatar'), async (req,res) => {
   try {
-    // Crea una nuova istanza di Author con i dati dalla richiesta
-    const author = new Author(req.body);
-
-    const newAuthor = await author.save(); // Salva il nuovo utente nel database
+    const authorData = req.body;
+    if(req.file) {
+      authorData.avatar = req.file.path; // Cloudinary restituirà direttamente il suo url
+    }
+    const newAuthor = new Author(authorData)
+    await newAuthor.save();
 
     // Rimuovi la password dalla risposta per sicurezza
     const authorResponse = newAuthor.toObject();
     delete authorResponse.password;
 
-    // Risponde con i dati del nuovo utente e uno status 201 (Created)
-    res.status(201).json(authorResponse); 
+    // CODICE PER INVIO MAIL con MAILGUN
+    const htmlContent = `
+      <h1>Grazie per esserti reggistrato!</h1>
+    `;
+
+    await sendEmail(
+      newAuthor.email, 
+      "Ti sei reggistrato correttamente",
+      htmlContent
+    );
+
+    res.status(201).json(newAuthor)
   } catch (err) {
-    
+
+    console.error('errore nella creazione', err)
     res.status(400).json({ message: err.message }); // Gestisce errori di validazione e risponde con un messaggio di errore
+
   }
-});
-
-
+})
 
 // Rotta per aggiornare un utente
 router.put("/:id", async (req, res) => {
