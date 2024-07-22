@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 // Definizione dello schema dell'autore utilizzando il costruttore Schema di Mongoose
 const authorSchema = new mongoose.Schema(
   {
-    nome: {type: String, required: true },
+    nome: {type: String },
     cognome: {type: String },
     email: {type: String, unique: true },
     avatar: {type: String },
