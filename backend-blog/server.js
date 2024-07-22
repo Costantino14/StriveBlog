@@ -29,20 +29,20 @@ const app = express();
 
 
 const corsOptions = {
-  origin: function(origin, callback) {
+  origin: function (origin, callback) {
 
     const whitelist = [
       'http://localhost:3000',
       'https://striveblog-uz2c.onrender.com',
       'https://strive-blog-tawny.vercel.app',
-    ]
+    ];
 
     if (process.env.NODE_ENV === 'development') {
       callback(null, true)
     } else if (whitelist.indexOf(origin) !== -1 || !origin) {
       callback(null, true)
     } else {
-      callback(new Error('GENERIC CORS ERROR - CORS (server backend)'))
+      callback(new Error(`GENERIC CORS ERROR - CORS (server backend) - Origin: ${origin}`))
     }
   },
   credentials: true
