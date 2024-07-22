@@ -3,6 +3,7 @@ import { Button, Container, Navbar } from "react-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { useState, useEffect } from "react";
+import { getUserData } from "../../services/api";
 import "./styles.css";
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
@@ -30,9 +31,24 @@ const NavBar = (listAuthors) => {
 
   useEffect(() => {
     // Controlla se esiste un token nel localStorage
-    const checkLoginStatus = () => {
+    const checkLoginStatus = async () => {
       const token = localStorage.getItem("token");
-      setIsLoggedIn(!!token);
+
+      if (token) {
+        try {
+          await getUserData();
+          setIsLoggedIn(true);
+          
+        } catch (err) {
+          console.error("Token non funzionante", err);
+          localStorage.removeItem("token");
+          setIsLoggedIn(false)
+        }
+      } else {
+        setIsLoggedIn(false)
+      }
+
+      setIsLoggedIn(false);
       
     };
 
@@ -42,9 +58,13 @@ const NavBar = (listAuthors) => {
     // Aggiungi un event listener per controllare lo stato di login
     window.addEventListener("storage", checkLoginStatus);
 
+    window.addEventListener("loginStateChange", checkLoginStatus);
+
     // Rimuovi l'event listener quando il componente viene smontato
     return () => {
       window.removeEventListener("storage", checkLoginStatus);
+      window.removeEventListener("loginStateChange", checkLoginStatus);
+
     };
   }, [data]);
 

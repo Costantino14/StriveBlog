@@ -5,6 +5,8 @@ import { Container, Row, Col, Form, Button,} from "react-bootstrap";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import "./style.css";
 
+const API_URL = import.meta.env.API_URL || "http://localhost:5001"
+
 export default function Login() {
   const [formData, setFormData] = useState({
     email: "",
@@ -61,12 +63,12 @@ export default function Login() {
 
   const handleGoogleLogin = () => {
     localStorage.removeItem("data");
-    window.location.href = "http://localhost:5001/api/auth/google";
+    window.location.href = `${API_URL}/api/auth/google`;
   };
 
   const handleGitHubLogin = () => {
     localStorage.removeItem("data");
-    window.location.href = "http://localhost:5001/api/auth/github";
+    window.location.href = `${API_URL}/api/auth/github`;
   };
 
   return (
