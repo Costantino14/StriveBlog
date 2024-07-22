@@ -20,7 +20,6 @@ import passport from "./Config/passportConfig.js"; // NEW! importiamo passport
 import { authorizedHandler, badRequestHandler, genericErrorHandler, notFoundHandler } from './middlewares/errorHandlers.js'
 
 
-import mongoose from 'mongoose';
 
 mongoose.set('strictQuery', false);
 mongoose.connect(process.env.MONGO_URI, { 
