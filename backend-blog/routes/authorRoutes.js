@@ -5,7 +5,7 @@ import Author from "../models/Author.js"; // Importa il modello author
 import BlogPost from "../models/BlogPost.js";
 import { v2 as cloudinary} from "cloudinary";
 import cloudinaryUploader from "../Config/cloudinaryConfig.js";
-import { sendEmail } from "../services/emailServices.js";
+//import { sendEmail } from "../services/emailServices.js";
 
 const router = express.Router(); // Crea un router Express
 
@@ -70,20 +70,20 @@ router.post('/', cloudinaryUploader.single('avatar'), async (req,res) => {
     const newAuthor = new Author(authorData)
     await newAuthor.save();
 
-    // Rimuovi la password dalla risposta per sicurezza
-    const authorResponse = newAuthor.toObject();
-    delete authorResponse.password;
-
-    // CODICE PER INVIO MAIL con MAILGUN
-    const htmlContent = `
-      <h1>Grazie per esserti registrato!</h1>
-    `;
-
-    await sendEmail(
-      newAuthor.email, 
-      "Ti sei registrato correttamente",
-      htmlContent
-    );
+  //  // Rimuovi la password dalla risposta per sicurezza
+  //  const authorResponse = newAuthor.toObject();
+  //  delete authorResponse.password;
+//
+  //  // CODICE PER INVIO MAIL con MAILGUN
+  //  const htmlContent = `
+  //    <h1>Grazie per esserti registrato!</h1>
+  //  `;
+//
+  //  await sendEmail(
+  //    newAuthor.email, 
+  //    "Ti sei registrato correttamente",
+  //    htmlContent
+  //  );
 
     res.status(201).json(newAuthor)
   } catch (err) {
