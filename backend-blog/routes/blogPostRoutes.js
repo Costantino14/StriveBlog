@@ -79,12 +79,26 @@ router.use(authMiddleware);
 // Rotta per creare un nuovo post
   router.post('/', cloudinaryUploader.single('cover'), async (req,res) => {
   try {
+
+    console.log("Dati ricevuti:", req.body);
+    console.log("File ricevuto:", req.file);
+
     const postData = req.body;
     if(req.file) {
       postData.cover = req.file.path; // Cloudinary restituirà direttamente il suo url
     }
+
+    console.log("Dati del post prima del salvataggio:", postData);
+
+
     const newPost = new BlogPost(postData)
+
+    console.log("Nuovo post creato (non ancora salvato):", newPost);
+
     await newPost.save();
+
+    console.log("Post salvato con successo:", newPost);
+
 
     // CODICE PER INVIO MAIL con MAILGUN
     const htmlContent = `
@@ -104,7 +118,7 @@ router.use(authMiddleware);
     res.status(201).json(newPost)
   } catch (err) {
 
-    console.error('errore nella creazione', err)
+    console.error('Errore dettagliato nella creazione:', err);
     res.status(400).json({ message: err.message }); // Gestisce errori di validazione e risponde con un messaggio di errore
 
   }
