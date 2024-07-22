@@ -88,7 +88,7 @@ const NavBar = (listAuthors) => {
           <img className="blog-navbar-brand" alt="logo" src={logo} />
         </Navbar.Brand>
         
-{ data ? (
+{isLoggedIn || data ? (
   <div className="d-flex">
     <DropdownButton variant="dark" size="lg" title={`Benvenuto ${nome}`}>
       <Dropdown.Item className="dropdownItem" as={Link} to="/new" size="lg">+ Crea Articolo</Dropdown.Item>
