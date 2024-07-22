@@ -8,7 +8,6 @@ import ModalPost from '../components/ModalPost';
 
 export default function Profile(listAuthors) {
   const [posts, setPosts] = useState([]);
-  const [loaded, setLoaded] = useState(false);
   const [foundAuthor, setFoundAuthor] = useState(null);
   const navigate = useNavigate();
 
@@ -27,8 +26,7 @@ export default function Profile(listAuthors) {
     const FetchBlogPost = async () => {
       try {
         const response = await getPosts();
-        setPosts(response.data);
-        setLoaded(true);
+        setPosts(response.data.blogPosts);
       } catch (error) {
         console.error("Errore nel recupero dei dati utente:", error);
       }    

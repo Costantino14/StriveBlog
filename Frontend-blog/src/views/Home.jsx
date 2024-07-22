@@ -24,10 +24,10 @@ const Home = () => {
       try {
         const response = await getPosts();
           // Aggiorna lo stato con i dati dei post
-          setPosts(response.data);
+          setPosts(response.data.blogPosts);
           setLoaded(true); 
       } catch (error) {
-        console.error("Errore nel recupero dei dati utente:", error); // Logga l'errore in console
+        console.error("Errore nel recupero dei dati:", error); // Logga l'errore in console
         setIsLoggedIn(false); // Imposta lo stato di autenticazione a false
       }
     } else {
