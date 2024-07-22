@@ -70,9 +70,9 @@ router.post('/', cloudinaryUploader.single('avatar'), async (req,res) => {
     const newAuthor = new Author(authorData)
     await newAuthor.save();
 
-  //  // Rimuovi la password dalla risposta per sicurezza
-  //  const authorResponse = newAuthor.toObject();
-  //  delete authorResponse.password;
+   // Rimuovi la password dalla risposta per sicurezza
+   const authorResponse = newAuthor.toObject();
+   delete authorResponse.password;
 //
   //  // CODICE PER INVIO MAIL con MAILGUN
   //  const htmlContent = `
