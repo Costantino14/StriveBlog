@@ -73,31 +73,25 @@ router.get("/:id", async (req, res) => {
 });
 
 // Da qui si proteggono le altre rotte con il middleware di autenticazione
-router.use(authMiddleware);
+//router.use(authMiddleware);
 
 
 // Rotta per creare un nuovo post
   router.post('/', cloudinaryUploader.single('cover'), async (req,res) => {
   try {
 
-    alert("Dati ricevuti:");
-    console.log("File ricevuto:", req.file);
-
     const postData = req.body;
     if(req.file) {
       postData.cover = req.file.path; // Cloudinary restituirà direttamente il suo url
     }
 
-    alert("Dati del post prima del salvataggio:");
 
 
     const newPost = new BlogPost(postData)
 
-    console.log("Nuovo post creato (non ancora salvato):", newPost);
 
     await newPost.save();
 
-    alert("Post salvato con successo:");
 
 
     // CODICE PER INVIO MAIL con MAILGUN
