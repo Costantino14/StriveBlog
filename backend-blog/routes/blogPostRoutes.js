@@ -6,7 +6,6 @@ import cors from 'cors'
 import upload from "../middlewares/upload.js";
 import { v2 as cloudinary} from "cloudinary";
 import { authMiddleware } from "../middlewares/authMiddleware.js"; // Middleware di autenticazione
-import { saveWithTimeout } from '../utils/dbHelpers.js';
 
 
 //Import di Cloudinary
@@ -77,29 +76,19 @@ router.get("/:id", async (req, res) => {
 //router.use(authMiddleware);
 
 
-// Funzione di utility per il timeout
-const saveWithTimeout = async (document, timeoutMs = 5000) => {
-  return Promise.race([
-    document.save(),
-    new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Save operation timed out')), timeoutMs)
-    )
-  ]);
-};
-
+// Rotta per creare un nuovo post
 router.post("/", cloudinaryUploader.single('cover'), async (req, res) => {
   try {
-    console.log("Received post data:", req.body);
-    console.log("File data:", req.file);
-
-    // Verifica lo stato della connessione al database
     if (mongoose.connection.readyState !== 1) {
       console.error("Database not connected. Current state:", mongoose.connection.readyState);
       return res.status(500).json({ message: "Database non connesso" });
     }
 
+    console.log("Received post data:", req.body);
+    console.log("File data:", req.file);
+
     const postData = req.body;
-    if (req.file) {
+    if(req.file) {
       postData.cover = req.file.path;
     }
 
@@ -108,8 +97,7 @@ router.post("/", cloudinaryUploader.single('cover'), async (req, res) => {
 
     let savedPost;
     try {
-      // Utilizzo della funzione saveWithTimeout con validazione disabilitata
-      savedPost = await saveWithTimeout(newPost.save({ validateBeforeSave: false }));
+      savedPost = await newPost.save();
       console.log("Post saved successfully:", savedPost);
     } catch (dbError) {
       console.error("Database error:", dbError);
@@ -118,12 +106,7 @@ router.post("/", cloudinaryUploader.single('cover'), async (req, res) => {
 
     // Invia email solo dopo che il post è stato salvato con successo
     try {
-      // Assumi che ci sia una funzione sendEmail nel tuo emailServices
-      await sendEmail(
-        savedPost.authorEmail,
-        "Post Creato con Successo",
-        `Il tuo post "${savedPost.title}" è stato creato con successo.`
-      );
+      // Il tuo codice per l'invio dell'email qui
       console.log("Email sent successfully");
     } catch (emailError) {
       console.error("Error sending email:", emailError);
