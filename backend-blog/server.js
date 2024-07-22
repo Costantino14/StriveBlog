@@ -33,7 +33,7 @@ const corsOptions = {
 
     const whitelist = [
       'http://localhost:3000',
-      '',
+      'https://striveblog-uz2c.onrender.com',
       '',
     ]
 
