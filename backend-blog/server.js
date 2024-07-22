@@ -39,7 +39,8 @@ const corsOptions = {
 
     if (process.env.NODE_ENV === 'development') {
       callback(null, true)
-    } else if (whitelist.indexOf(origin) !== -1 || !origin) {
+    } else if (whitelist.indexOf(origin) !== -1 || !origin || 
+    origin.endsWith('.vercel.app')) {
       callback(null, true)
     } else {
       callback(new Error(`GENERIC CORS ERROR - CORS (server backend) - Origin: ${origin}`))
