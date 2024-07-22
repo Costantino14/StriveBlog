@@ -96,7 +96,6 @@ router.use(authMiddleware);
   try {
     const postData = req.body;
     if(req.file) {
-      //postData.cover = `http://localhost:5001/uploads/${req.file.filename}`  //Sempre del metodo vecchio
       postData.cover = req.file.path; // Cloudinary restituirà direttamente il suo url
     }
     const newPost = new BlogPost(postData)

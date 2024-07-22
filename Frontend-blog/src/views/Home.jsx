@@ -42,10 +42,10 @@ const Home = () => {
     <body className="root">
     <Container fluid="sm">
       {!isLoggedIn ? (
-      <>
+      <div className="private-blog">
         <h2  className="mt-5">Questo è un blog privato,</h2>
         <h2>se vuoi vedere il contenuto devi fare il login o registrarti!</h2>
-      </>
+      </div>
       ) : (
         <>
       <form className="mt-5">

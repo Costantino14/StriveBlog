@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import "./style.css";
-import { deleteAuthor, getPosts } from '../services/api';
+import { deleteAuthor, deletePost, getPosts } from '../services/api';
 import { Button, Card, Col, Container, Row } from 'react-bootstrap';
 import { HiOutlineTrash } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
+import ModalPost from '../components/ModalPost';
 
 export default function Profile(listAuthors) {
   const [posts, setPosts] = useState([]);
@@ -36,7 +37,7 @@ export default function Profile(listAuthors) {
     FetchBlogPost(); 
   }, []);
 
-  const handleDelete = async (id) => {
+  const handleDeleteAuthor = async (id) => {
     if (!foundAuthor) {
       console.error("Autore non trovato");
       return;
@@ -46,12 +47,32 @@ export default function Profile(listAuthors) {
       if (response) {
         localStorage.removeItem("token");
         localStorage.removeItem("data");
+        alert("Hai cancellato il tuo profilo!")
         navigate("/");
       } else {
         console.error("Errore nella cancellazione del autore, passaggio errato");
       }
     } catch (error) {
       console.error("Errore nella cancellazione del autore:", error.response?.data || error.message);
+    }
+  };
+
+
+  const handleDeletePost = async (id) => {
+    if (!id) {
+      console.error("Post non trovato");
+      return;
+    }
+    try {
+      const response = await deletePost(id);
+      if (response) {
+        setPosts(prev => prev.filter(post => post._id !== id));
+        alert("Post cancellato con successo!")
+      } else {
+        console.error("Errore nella cancellazione del post, passaggio errato");
+      }
+    } catch (error) {
+      console.error("Errore nella cancellazione del post:", error.response?.data || error.message);
     }
   };
 
@@ -79,10 +100,8 @@ export default function Profile(listAuthors) {
             Data di Nascita: {foundAuthor.dataNascita} <br />
             E-mail: {foundAuthor.email}
         </Card.Text>
-        <div className=''>
           <Button className="ms-1 buttons-profile" variant="outline-success" ><HiOutlineTrash /></Button>
-          <Button className="ms-1 buttons-profile" variant="outline-danger" onClick={() =>handleDelete(foundAuthor._id)}><HiOutlineTrash /></Button>
-        </div>
+          <Button className="ms-1 buttons-profile" variant="outline-danger" onClick={() =>handleDeleteAuthor(foundAuthor._id)}><HiOutlineTrash /></Button>
       </Card.Body>
     </Card>
     </div>
@@ -102,6 +121,8 @@ export default function Profile(listAuthors) {
           <Card.Title className='post-profile-title'>{post.title}</Card.Title>
           <Card.Text className='post-profile-text'>{post.category}</Card.Text>
           <Card.Text className='post-profile-text'>{post.content.substring(0, 100)}...</Card.Text>
+          <ModalPost id={post._id} />          
+          <Button className="ms-1 buttons-profile" variant="outline-danger" onClick={() =>handleDeletePost(post._id)}><HiOutlineTrash /></Button>
         </Card.Body>
       </Col>
     </Row>

@@ -15,6 +15,7 @@ function ModalComment({id, commentId, chComm, setChComm, updateCommentInList}) {
   }, [chComm]);
 
   const handleClose = () => setShow(false);
+  
   const handleShow = () => {
     setLocalComment(chComm.content);
     setShow(true);
