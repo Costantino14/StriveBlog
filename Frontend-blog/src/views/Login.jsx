@@ -5,7 +5,7 @@ import { Container, Row, Col, Form, Button,} from "react-bootstrap";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import "./style.css";
 
-const API_URL = import.meta.env.API_URL || "http://localhost:5001"
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5001"
 
 export default function Login() {
   const [formData, setFormData] = useState({
