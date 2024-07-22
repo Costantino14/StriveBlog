@@ -13,7 +13,7 @@ passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
 
       // L'URL a cui Google reindizzerà dopo l'autenticazione, lo stesso segnato su google Cloud
-      callbackURL: "/api/auth/google/callback",
+      callbackURL: `${process.env.BACKEND_URL}/api/auth/google/callback`,
     },
     // Funzione chiamata quando l'autenticazione Google ha successo
     async (accessToken, refreshToken, profile, done) => {
@@ -55,7 +55,7 @@ passport.use(new GitHubStrategy(
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
       
-      callbackURL: "/api/auth/github/callback",
+      callbackURL: `${process.env.BACKEND_URL}/api/auth/github/callback`,
     },
     // Nuova una funzione, questa cambia parecchio rispetto a Google, è fatta ad hoc per GitHub
     async (accessToken, refreshToken, profile, done) => {
@@ -103,9 +103,6 @@ passport.use(new GitHubStrategy(
     }
   )
 );
-
-
-
 
 // Serializzazione dell'utente per la sessione
 // Questa funzione determina quali dati dell'utente devono essere memorizzati nella sessione
