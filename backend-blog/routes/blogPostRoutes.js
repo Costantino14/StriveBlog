@@ -6,6 +6,7 @@ import cors from 'cors'
 import upload from "../middlewares/upload.js";
 import { v2 as cloudinary} from "cloudinary";
 import { authMiddleware } from "../middlewares/authMiddleware.js"; // Middleware di autenticazione
+import { saveWithTimeout } from '../utils/dbHelpers.js';
 
 
 //Import di Cloudinary
@@ -76,47 +77,65 @@ router.get("/:id", async (req, res) => {
 //router.use(authMiddleware);
 
 
-// Rotta per creare un nuovo post
-  router.post('/', cloudinaryUploader.single('cover'), async (req,res) => {
-  try {
+// Funzione di utility per il timeout
+const saveWithTimeout = async (document, timeoutMs = 5000) => {
+  return Promise.race([
+    document.save(),
+    new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Save operation timed out')), timeoutMs)
+    )
+  ]);
+};
 
-    const postData = req.body;
-    if(req.file) {
-      postData.cover = req.file.path; // Cloudinary restituirà direttamente il suo url
+router.post("/", cloudinaryUploader.single('cover'), async (req, res) => {
+  try {
+    console.log("Received post data:", req.body);
+    console.log("File data:", req.file);
+
+    // Verifica lo stato della connessione al database
+    if (mongoose.connection.readyState !== 1) {
+      console.error("Database not connected. Current state:", mongoose.connection.readyState);
+      return res.status(500).json({ message: "Database non connesso" });
     }
 
+    const postData = req.body;
+    if (req.file) {
+      postData.cover = req.file.path;
+    }
 
+    const newPost = new BlogPost(postData);
+    console.log("New post object:", newPost);
 
-    const newPost = new BlogPost(postData)
+    let savedPost;
+    try {
+      // Utilizzo della funzione saveWithTimeout con validazione disabilitata
+      savedPost = await saveWithTimeout(newPost.save({ validateBeforeSave: false }));
+      console.log("Post saved successfully:", savedPost);
+    } catch (dbError) {
+      console.error("Database error:", dbError);
+      return res.status(500).json({ message: "Errore nel salvataggio del post", error: dbError.message });
+    }
 
+    // Invia email solo dopo che il post è stato salvato con successo
+    try {
+      // Assumi che ci sia una funzione sendEmail nel tuo emailServices
+      await sendEmail(
+        savedPost.authorEmail,
+        "Post Creato con Successo",
+        `Il tuo post "${savedPost.title}" è stato creato con successo.`
+      );
+      console.log("Email sent successfully");
+    } catch (emailError) {
+      console.error("Error sending email:", emailError);
+      // Non facciamo fallire la richiesta se l'email non viene inviata
+    }
 
-    await newPost.save();
-
-
-
-    // CODICE PER INVIO MAIL con MAILGUN
-    const htmlContent = `
-      <h1>Il tuo post è stato pubblicato!</h1>
-      <p>Ciao ${newPost.authorEmail},</p>
-      <p>Il tuo post "${newPost.title}" è stato pubblicato con successo.</p>
-      <p>Categoria: ${newPost.category}</p>
-      <p>Grazie per il tuo contributo al blog!</p>
-    `;
-
-    await sendEmail(
-      newPost.authorEmail, // Ovviamente assumendo che newPost.author sia l'email dell'autore
-      "Il tuo post è stato correttamente pubblicato",
-      htmlContent
-    );
-
-    res.status(201).json(newPost)
-  } catch (err) {
-
-    console.error('Errore dettagliato nella creazione:', err);
-    res.status(400).json({ message: err.message }); // Gestisce errori di validazione e risponde con un messaggio di errore
-
+    res.status(201).json(savedPost);
+  } catch (error) {
+    console.error("Unexpected error:", error);
+    res.status(500).json({ message: "Errore inaspettato", error: error.message });
   }
-})
+});
 
 // Rotta per aggiornare un post
 router.put("/:id", async (req, res) => {
