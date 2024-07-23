@@ -50,6 +50,7 @@ export default function Login() {
     e.preventDefault();
     try {
       const response = await loginUser(formData);
+      localStorage.removeItem("data");
       localStorage.setItem("data", formData.email);
       localStorage.setItem("token", response.token);
       window.dispatchEvent(new Event("storage"));
