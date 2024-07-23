@@ -50,12 +50,14 @@ export default function Login() {
     e.preventDefault();
     try {
       const response = await loginUser(formData);
-      localStorage.removeItem("data");
-      localStorage.setItem("data", formData.email);
-      localStorage.setItem("token", response.token);
-      window.dispatchEvent(new Event("storage"));
-      alert("Login effettuato con successo!");
-      navigate("/");
+      if (response) {
+        localStorage.setItem("data", formData.email);
+        localStorage.setItem("token", response.token);
+        window.dispatchEvent(new Event("storage"));
+        alert("Login effettuato con successo!");
+        navigate("/");
+    }
+      
     } catch (error) {
       console.error("Errore durante il login:", error);
       alert("Credenziali non valide. Riprova.");
