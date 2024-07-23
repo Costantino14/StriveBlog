@@ -37,7 +37,7 @@ router.get("/", async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const sort = req.query.sort || 'createdAt';  // Cambiato da 'cognome' a 'createdAt'
-    const sortDirection = req.query.sortDirection === 'desc' ? -1 : 1;
+    const sortDirection = req.query.sortDirection === 'asc' ? -1 : 1;
     const skip = (page - 1) * limit;
     
     console.log(`Parametri di query: page=${page}, limit=${limit}, sort=${sort}, sortDirection=${sortDirection}`);
