@@ -51,6 +51,14 @@ const Home = () => {
     setCurrentPage(pageNumber);
   };
 
+  const filterPosts = (post) => {
+    const searchLower = search.toLowerCase();
+    return (
+      post.title.toLowerCase().startsWith(searchLower) ||
+      post.authorEmail.toLowerCase().startsWith(searchLower)
+    );
+  };
+
   return (
     <body className="root">
       <Container fluid="sm">
@@ -74,7 +82,7 @@ const Home = () => {
             <h1 className="blog-main-title mb-3">Benvenuto sullo Strive Blog!</h1>
             <Row>
               {posts
-                .filter(post => post.title.toLowerCase().includes(search.toLowerCase()) || post.authorEmail.toLowerCase().includes(search.toLowerCase()))
+                .filter(filterPosts)
                 .map((post) => {
                   const author = authors[post.authorEmail.toLowerCase()];
                   return (
@@ -96,7 +104,7 @@ const Home = () => {
                               <Col xs={"auto"} className="pe-0">
                                 <Image 
                                   className="blog-author" 
-                                  src={author ? author.avatar : 'https://via.placeholder.com/40'} 
+                                  src={author ? author.avatar : 'https://i.pinimg.com/236x/61/f5/d9/61f5d9d30d33cfe3d5e6267222a21065.jpg'} 
                                   roundedCircle 
                                 />
                               </Col>

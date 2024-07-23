@@ -4,7 +4,6 @@ import { deleteAuthor, deletePost, getPosts, getUserData } from '../services/api
 import { Button, Card, Col, Container, Row } from 'react-bootstrap';
 import { HiOutlineTrash } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
-import ModalPost from '../components/ModalPost';
 
 export default function Profile() {
   const [posts, setPosts] = useState([]);
@@ -105,7 +104,6 @@ export default function Profile() {
                     <Card.Title className='post-profile-title'>{post.title}</Card.Title>
                     <Card.Text className='post-profile-text'>{post.category}</Card.Text>
                     <Card.Text className='post-profile-text'>{post.content.substring(0, 100)}...</Card.Text>
-                    <ModalPost id={post._id} />          
                     <Button className="ms-1 buttons-profile" variant="outline-danger" onClick={() => handleDeletePost(post._id)}><HiOutlineTrash /></Button>
                   </Card.Body>
                 </Col>

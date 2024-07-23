@@ -113,7 +113,7 @@ const Blog = ({ listAuthors }) => {
 
 
 
-  if (!post) return <body>Caricamento...</body>;
+  if (!post) return <body className="root">Caricamento...</body>;
 
   return (
     <body className="root">
@@ -125,7 +125,7 @@ const Blog = ({ listAuthors }) => {
           <div className="blog-details-author">
             <Row>
               <Col xs={"auto"} className="pe-0">
-                <Image className="blog-author" src={author? author.avatar : "https://static.vecteezy.com/ti/vettori-gratis/p1/26530210-moderno-persona-icona-utente-e-anonimo-icona-vettore-vettoriale.jpg"} roundedCircle />
+                <Image className="blog-author" src={author? author.avatar : "https://i.pinimg.com/236x/61/f5/d9/61f5d9d30d33cfe3d5e6267222a21065.jpg"} roundedCircle />
               </Col>
               <Col>
                 <div>di</div>
