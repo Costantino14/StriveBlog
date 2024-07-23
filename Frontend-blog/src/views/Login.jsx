@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { loginUser, getUserData } from "../services/api";
-import { Container, Row, Col, Form, Button,} from "react-bootstrap";
+import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import "./style.css";
 
@@ -21,24 +21,26 @@ export default function Login() {
     const token = params.get("token");
 
     if (token) {
-      localStorage.setItem("token", token);
-      fetchUserEmail(token);
+      handleSuccessfulLogin(token);
     }
   }, [location, navigate]);
 
-  const fetchUserEmail = async (token) => {
+  const handleSuccessfulLogin = async (token) => {
+    localStorage.setItem("token", token);
     try {
       const userData = await getUserData();
       if (userData && userData.email) {
         localStorage.setItem("data", userData.email);
         window.dispatchEvent(new Event("storage"));
+        alert("Login effettuato con successo!");
+        navigate("/");
       } else {
-        console.error("Email dell'utente non ricevuta dall'API");
+        throw new Error("Dati utente non ricevuti");
       }
-      navigate("/");
     } catch (error) {
-      console.error("Errore nel recupero dell'email dell'utente:", error);
-      alert("Errore nel recupero dell'email dell'utente. Riprova.");
+      console.error("Errore nel recupero dei dati utente:", error);
+      localStorage.removeItem("token");
+      alert("Errore durante il login. Riprova.");
     }
   };
 
@@ -50,14 +52,11 @@ export default function Login() {
     e.preventDefault();
     try {
       const response = await loginUser(formData);
-      if (response) {
-        localStorage.setItem("data", formData.email);
-        localStorage.setItem("token", response.token);
-        window.dispatchEvent(new Event("storage"));
-        alert("Login effettuato con successo!");
-      navigate("/");
-    }
-      
+      if (response && response.token) {
+        handleSuccessfulLogin(response.token);
+      } else {
+        throw new Error("Token non ricevuto dal server");
+      }
     } catch (error) {
       console.error("Errore durante il login:", error);
       alert("Credenziali non valide. Riprova.");
@@ -65,12 +64,10 @@ export default function Login() {
   };
 
   const handleGoogleLogin = () => {
-    localStorage.removeItem("data");
     window.location.href = `${API_URL}/api/auth/google`;
   };
 
   const handleGitHubLogin = () => {
-    localStorage.removeItem("data");
     window.location.href = `${API_URL}/api/auth/github`;
   };
 
@@ -118,3 +115,7 @@ export default function Login() {
     </body>
   );
 }
+
+
+
+ 

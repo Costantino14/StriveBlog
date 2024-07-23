@@ -1,87 +1,52 @@
-import React from "react";
-import { Button, Container, Navbar } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Button, Container, Navbar, Dropdown, DropdownButton } from "react-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
-import { useState, useEffect } from "react";
 import { getUserData } from "../../services/api";
 import "./styles.css";
-import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
 
-
-
-const NavBar = (listAuthors) => {
-  
+const NavBar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
 
-  let nome = "User"
-
-  const data = localStorage.getItem("data");
-  console.log(data)
-  console.log(listAuthors)
-  
-  if (data) {
-    const list = listAuthors.listAuthors;
-    const foundAuthor = list.find(author => author.email.toLowerCase() === data.toLowerCase());
-    nome = foundAuthor ? foundAuthor.nome : 'User';
-  } 
-  
-  console.log(nome)
-
-
   useEffect(() => {
-    // Controlla se esiste un token nel localStorage
     const checkLoginStatus = async () => {
       const token = localStorage.getItem("token");
-
       if (token) {
         try {
-          await getUserData();
+          const userDataResponse = await getUserData();
+          setUserData(userDataResponse);
           setIsLoggedIn(true);
-          
         } catch (err) {
           console.error("Token non funzionante", err);
           localStorage.removeItem("token");
-          setIsLoggedIn(false)
+          localStorage.removeItem("data");
+          setIsLoggedIn(false);
         }
       } else {
-        setIsLoggedIn(false)
+        setIsLoggedIn(false);
       }
-
-      setIsLoggedIn(false);
-      
     };
 
-    // Controlla lo stato di login all'avvio
     checkLoginStatus();
 
-    // Aggiungi un event listener per controllare lo stato di login
     window.addEventListener("storage", checkLoginStatus);
-
-    window.addEventListener("loginStateChange", checkLoginStatus);
-
-    // Rimuovi l'event listener quando il componente viene smontato
     return () => {
       window.removeEventListener("storage", checkLoginStatus);
-      window.removeEventListener("loginStateChange", checkLoginStatus);
-
     };
-  }, [data]);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("data");
     setIsLoggedIn(false);
-    if (location.pathname === ("/")) {
-      window.location.reload();
-    } else {
-      navigate("/")
-    }
-    
+    setUserData(null);
+    navigate("/");
   };
 
+  const nome = userData ? userData.nome : "User";
 
   return (
     <Navbar expand="lg" className="blog-navbar" fixed="top">
@@ -90,32 +55,27 @@ const NavBar = (listAuthors) => {
           <img className="blog-navbar-brand" alt="logo" src={logo} />
         </Navbar.Brand>
         
-{isLoggedIn || data ? (
-  <div className="d-flex">
-    <DropdownButton variant="dark" size="lg" title={`Benvenuto ${nome}`}>
-      <Dropdown.Item className="dropdownItem" as={Link} to="/new" size="lg">+ Crea Articolo</Dropdown.Item>
-      <Dropdown.Item className="dropdownItem" as={Link} to="/profile" size="lg">Profilo</Dropdown.Item>
-      <Dropdown.Item className="dropdownItem" onClick={handleLogout} size="lg">LogOut</Dropdown.Item>
-    </DropdownButton>
-  </div>
-) : (
-  <div className="d-flex">
-    <Button as={Link} to="/login" className="blog-navbar-add-button bg-dark" size="lg">
-      Login
-    </Button>
-    <Button as={Link} to="/register" className="blog-navbar-add-button bg-dark" size="lg">
-      Registrati
-    </Button>
-  </div>
-)}
-        
+        {isLoggedIn ? (
+          <div className="d-flex">
+            <DropdownButton variant="dark" size="lg" title={`Benvenuto ${nome}`}>
+              <Dropdown.Item className="dropdownItem" as={Link} to="/new" size="lg">+ Crea Articolo</Dropdown.Item>
+              <Dropdown.Item className="dropdownItem" as={Link} to="/profile" size="lg">Profilo</Dropdown.Item>
+              <Dropdown.Item className="dropdownItem" onClick={handleLogout} size="lg">LogOut</Dropdown.Item>
+            </DropdownButton>
+          </div>
+        ) : (
+          <div className="d-flex">
+            <Button as={Link} to="/login" className="blog-navbar-add-button bg-dark" size="lg">
+              Login
+            </Button>
+            <Button as={Link} to="/register" className="blog-navbar-add-button bg-dark" size="lg">
+              Registrati
+            </Button>
+          </div>
+        )}
       </Container>
     </Navbar>
   );
 };
 
 export default NavBar;
-
-
-
-
