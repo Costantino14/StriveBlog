@@ -42,10 +42,9 @@ export const deleteAuthor = (id) => api.delete(`/author/${id}`);
 
 
 // Funzioni per le operazioni CRUD di blogPost : GET, GET SINGOLO, POST, PUT, DELETE
-export const getPosts = async () => {
+export const getPosts = async (page = 1) => {
   try {
-    const response = await api.get("/blogPost");
-    console.log("Risposta dalla GET dei post:", response.data);
+    const response = await api.get(`/blogPost?page=${page}`);
     return response.data;
   } catch (error) {
     console.error("Errore nel recupero dei post:", error);
