@@ -18,7 +18,7 @@ const Home = () => {
       if (token) {
         setIsLoggedIn(true);
         try {
-          const data = await getPosts(currentPage);
+          const data = await getPosts(currentPage, 'createdAt', 'desc');
           console.log("Dati ricevuti nella Home:", data);
           setPosts(data.blogPosts);
           setTotalPages(data.totalPages);

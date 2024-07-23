@@ -32,25 +32,19 @@ const router = express.Router(); // Crea un router Express
 //});
 
 router.get("/", async (req, res) => {
-  console.log("Inizio della route GET per i post");
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-    const sort = req.query.sort || 'createdAt';  // Cambiato da 'cognome' a 'createdAt'
-    const sortDirection = req.query.sortDirection === 'asc' ? -1 : 1;
+    const sort = req.query.sort || 'createdAt';
+    const order = req.query.order === 'asc' ? 1 : -1; // 'desc' è il default
     const skip = (page - 1) * limit;
-    
-    console.log(`Parametri di query: page=${page}, limit=${limit}, sort=${sort}, sortDirection=${sortDirection}`);
 
     const blogPosts = await BlogPost.find({})
-      .sort({[sort]: sortDirection})
+      .sort({ [sort]: order })
       .skip(skip)
       .limit(limit);
 
-    console.log(`Trovati ${blogPosts.length} post`);
-
     const total = await BlogPost.countDocuments();
-    console.log(`Totale documenti nel database: ${total}`);
 
     res.json({
       blogPosts,
@@ -59,7 +53,6 @@ router.get("/", async (req, res) => {
       totalPost: total
     });
   } catch (err) {
-    console.error("Errore nel recupero dei post:", err);
     res.status(500).json({ message: err.message });
   }
 });
