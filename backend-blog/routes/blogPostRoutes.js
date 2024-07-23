@@ -97,7 +97,7 @@ router.post("/", cloudinaryUploader.single("cover"), async (req, res) => {
     `;
 
     await sendEmail(
-      newPost.authorEmail, // Ovviamente assumendo che newPost.author sia l'email dell'autore
+      'costantino.grabesu14@gmail.com', // Uso sempre questa email come destinatario perchè è l'unica abilitata, ho questo limite dovuto da mailgun
       "Il tuo post è stato correttamente pubblicato",
       htmlContent
     );
