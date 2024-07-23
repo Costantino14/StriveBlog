@@ -25,8 +25,8 @@ export default function Profile(listAuthors) {
   useEffect(() => {
     const FetchBlogPost = async () => {
       try {
-        const response = await getPosts();
-        setPosts(response.data.blogPosts);
+        const data = await getPosts();
+        setPosts(data.blogPosts);
       } catch (error) {
         console.error("Errore nel recupero dei dati utente:", error);
       }    
