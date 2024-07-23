@@ -34,7 +34,7 @@ const router = express.Router(); // Crea un router Express
 router.get("/", async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 12;
     const sort = req.query.sort || 'createdAt';
     const order = req.query.order === 'asc' ? 1 : -1; // 'desc' è il default
     const skip = (page - 1) * limit;
