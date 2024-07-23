@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Card, Col, Image, Container, Row, Pagination } from "react-bootstrap";
 import "./style.css";
-import { getPosts } from "../services/api";
+import { getPosts, getAuthors } from "../services/api";
 import { Link } from "react-router-dom";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
+  const [authors, setAuthors] = useState({});
   const [search, setSearch] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -13,18 +14,29 @@ const Home = () => {
   const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
-    const checkAuthAndFetchUserData = async () => {
+    const checkAuthAndFetchData = async () => {
       const token = localStorage.getItem("token");
       if (token) {
         setIsLoggedIn(true);
         try {
-          const data = await getPosts(currentPage, 'createdAt', 'desc');
-          console.log("Dati ricevuti nella Home:", data);
-          setPosts(data.blogPosts);
-          setTotalPages(data.totalPages);
+          const [postsData, authorsData] = await Promise.all([
+            getPosts(currentPage, 'createdAt', 'desc'),
+            getAuthors()
+          ]);
+          console.log("Dati ricevuti nella Home:", postsData);
+          setPosts(postsData.blogPosts);
+          setTotalPages(postsData.totalPages);
+          
+          // Creiamo una mappa degli autori usando le loro email come chiave
+          const authorsMap = authorsData.reduce((acc, author) => {
+            acc[author.email.toLowerCase()] = author;
+            return acc;
+          }, {});
+          setAuthors(authorsMap);
+          
           setLoaded(true);
         } catch (error) {
-          console.error("Errore nel recupero dei post nella Home:", error);
+          console.error("Errore nel recupero dei dati nella Home:", error);
           setIsLoggedIn(false);
         }
       } else {
@@ -32,7 +44,7 @@ const Home = () => {
       }
     };
 
-    checkAuthAndFetchUserData();
+    checkAuthAndFetchData();
   }, [currentPage]);
 
   const handlePageChange = (pageNumber) => {
@@ -63,35 +75,42 @@ const Home = () => {
             <Row>
               {posts
                 .filter(post => post.title.toLowerCase().includes(search.toLowerCase()) || post.authorEmail.toLowerCase().includes(search.toLowerCase()))
-                .map((post) => (
-                  <Col
-                    key={`item-${post._id}`}
-                    xs={12}
-                    md={6}
-                    lg={4}
-                    className={`blog-coll ${loaded ? "fade-in" : ""}`}
-                  >
-                    <Link to={`/blog/${post._id}`} className="blog-link">
-                      <Card className="blog-card">
-                        <Card.Img variant="top" src={post.cover} className="blog-cover" />
-                        <Card.Body>
-                          <Card.Title>{post.title}</Card.Title>
-                        </Card.Body>
-                        <Card.Footer>
-                          <Row>
-                            <Col xs={"auto"} className="pe-0">
-                              <Image className="blog-author" src={post.cover} roundedCircle />
-                            </Col>
-                            <Col>
-                              <div>di</div>
-                              <h6>{post.authorEmail}</h6>
-                            </Col>
-                          </Row>
-                        </Card.Footer>
-                      </Card>
-                    </Link>
-                  </Col>
-                ))}
+                .map((post) => {
+                  const author = authors[post.authorEmail.toLowerCase()];
+                  return (
+                    <Col
+                      key={`item-${post._id}`}
+                      xs={12}
+                      md={6}
+                      lg={4}
+                      className={`blog-coll ${loaded ? "fade-in" : ""}`}
+                    >
+                      <Link to={`/blog/${post._id}`} className="blog-link">
+                        <Card className="blog-card">
+                          <Card.Img variant="top" src={post.cover} className="blog-cover" />
+                          <Card.Body>
+                            <Card.Title>{post.title}</Card.Title>
+                          </Card.Body>
+                          <Card.Footer>
+                            <Row>
+                              <Col xs={"auto"} className="pe-0">
+                                <Image 
+                                  className="blog-author" 
+                                  src={author ? author.avatar : 'https://via.placeholder.com/40'} 
+                                  roundedCircle 
+                                />
+                              </Col>
+                              <Col>
+                                <div>di</div>
+                                <h6>{author ? `${author.nome} ${author.cognome}` : post.authorEmail}</h6>
+                              </Col>
+                            </Row>
+                          </Card.Footer>
+                        </Card>
+                      </Link>
+                    </Col>
+                  );
+                })}
             </Row>
             <Pagination className="mt-3 justify-content-center">
               <Pagination.Prev 
