@@ -22,12 +22,12 @@ const Home = () => {
     if (token) {
       setIsLoggedIn(true); // Imposta lo stato di autenticazione a true
       try {
-        const response = await getPosts();
-          // Aggiorna lo stato con i dati dei post
-          setPosts(response.data.blogPosts);
-          setLoaded(true); 
+        const data = await getPosts();
+        console.log("Dati ricevuti nella Home:", data);
+        setPosts(data.blogPosts);// forse da cambiare £££££££££££££££££££££
+        setLoaded(true); 
       } catch (error) {
-        console.error("Errore nel recupero dei dati:", error); // Logga l'errore in console
+        console.error("Errore nel recupero dei post nella Home:", error);
         setIsLoggedIn(false); // Imposta lo stato di autenticazione a false
       }
     } else {
