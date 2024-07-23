@@ -60,10 +60,9 @@ const NewBlogPost = (setAuthors, authors) => {
       // Invia i dati del post al backend
       await createPost(formData);
       // Naviga alla rotta della home dopo la creazione del post
-      alert("Articolo caricato con successo!");
       navigate("/");
     } catch (error) {
-      console.error("Errore nella creazione del post:", error);
+      console.error("Errore dettagliato nella creazione del post:", error.response?.data || error);
     }
   };
 

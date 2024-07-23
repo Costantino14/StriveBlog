@@ -6,7 +6,7 @@ import cors from 'cors'
 import upload from "../middlewares/upload.js";
 import { v2 as cloudinary} from "cloudinary";
 import { authMiddleware } from "../middlewares/authMiddleware.js"; // Middleware di autenticazione
-
+import mongoose from 'mongoose';
 
 //Import di Cloudinary
 import cloudinaryUploader from "../Config/cloudinaryConfig.js"
@@ -73,52 +73,47 @@ router.get("/:id", async (req, res) => {
 });
 
 // Da qui si proteggono le altre rotte con il middleware di autenticazione
-//router.use(authMiddleware);
+router.use(authMiddleware);
 
 
 // Rotta per creare un nuovo post
-router.post("/", cloudinaryUploader.single('cover'), async (req, res) => {
+router.post("/", cloudinaryUploader.single("cover"), async (req, res) => {
+  try{
   try {
-    if (mongoose.connection.readyState !== 1) {
-      console.error("Database not connected. Current state:", mongoose.connection.readyState);
-      return res.status(500).json({ message: "Database non connesso" });
-    }
-
-    console.log("Received post data:", req.body);
-    console.log("File data:", req.file);
-
     const postData = req.body;
-    if(req.file) {
-      postData.cover = req.file.path;
+    if (req.file) {
+      postData.cover = req.file.path; // Cloudinary restituirà direttamente il suo url
     }
-
     const newPost = new BlogPost(postData);
-    console.log("New post object:", newPost);
+    await newPost.save();
 
-    let savedPost;
-    try {
-      savedPost = await newPost.save();
-      console.log("Post saved successfully:", savedPost);
-    } catch (dbError) {
-      console.error("Database error:", dbError);
-      return res.status(500).json({ message: "Errore nel salvataggio del post", error: dbError.message });
-    }
+    // CODICE PER INVIO MAIL con MAILGUN
+    const htmlContent = `
+      <h1>Il tuo post è stato pubblicato!</h1>
+      <p>Ciao ${newPost.authorEmail},</p>
+      <p>Il tuo post "${newPost.title}" è stato pubblicato con successo.</p>
+      <p>Categoria: ${newPost.category}</p>
+      <p>Grazie per il tuo contributo al blog!</p>
+    `;
 
-    // Invia email solo dopo che il post è stato salvato con successo
-    try {
-      // Il tuo codice per l'invio dell'email qui
-      console.log("Email sent successfully");
-    } catch (emailError) {
-      console.error("Error sending email:", emailError);
-      // Non facciamo fallire la richiesta se l'email non viene inviata
-    }
+    await sendEmail(
+      newPost.authorEmail, // Ovviamente assumendo che newPost.author sia l'email dell'autore
+      "Il tuo post è stato correttamente pubblicato",
+      htmlContent
+    );
 
-    res.status(201).json(savedPost);
+    res.status(201).json(newPost);
   } catch (error) {
-    console.error("Unexpected error:", error);
-    res.status(500).json({ message: "Errore inaspettato", error: error.message });
+    console.error(error);
+    res.status(400).json({ message: error.message });
   }
+} catch (error) {
+  console.error("Errore dettagliato:", error);
+  res.status(500).json({ message: error.message, stack: error.stack });
+}
 });
+
+
 
 // Rotta per aggiornare un post
 router.put("/:id", async (req, res) => {
