@@ -1,23 +1,15 @@
 // routes/authorRoutes.js
 
-import express from "express"; // Importa il pacchetto Express
-import Author from "../models/Author.js"; // Importa il modello author
+import express from "express"; 
+import Author from "../models/Author.js"; 
 import BlogPost from "../models/BlogPost.js";
 import { v2 as cloudinary} from "cloudinary";
 import cloudinaryUploader from "../Config/cloudinaryConfig.js";
-//import { sendEmail } from "../services/emailServices.js";
+import { sendEmail } from "../services/emailServices.js";
 
 const router = express.Router(); // Crea un router Express
 
-// Rotta per ottenere tutti gli utenti
-//router.get("/", async (req, res) => {
-//  try {
-//    const authors = await Author.find({}); // Trova tutti gli utenti nel database
-//    res.json(authors); // Risponde con i dati degli utenti in formato JSON
-//  } catch (err) {
-//    res.status(500).json({ message: err.message }); // Gestisce errori e risponde con un messaggio di errore
-//  }
-//});
+
 
 router.get("/", async (req, res) => {
   try {
@@ -26,7 +18,7 @@ router.get("/", async (req, res) => {
      const sort = req.query.sort || 'cognome';  
      const sortDirection = req.query.sortDirection === 'desc' ? -1 : 1;
      const skip= (page -1)*limit;
-     const authors =  await Author.find({}) // Trova tutti gli utenti nel database
+     const authors =  await Author.find({}) // Trova tutti gli utenti/autori nel database
       .sort({[sort]: sortDirection})
       .skip(skip)
       .limit(limit)
@@ -74,16 +66,16 @@ router.post('/', cloudinaryUploader.single('avatar'), async (req,res) => {
    const authorResponse = newAuthor.toObject();
    delete authorResponse.password;
 //
-  //  // CODICE PER INVIO MAIL con MAILGUN
-  //  const htmlContent = `
-  //    <h1>Grazie per esserti registrato!</h1>
-  //  `;
-//
-  //  await sendEmail(
-  //    newAuthor.email, 
-  //    "Ti sei registrato correttamente",
-  //    htmlContent
-  //  );
+  //  CODICE PER INVIO MAIL con MAILGUN, anche qui ho messo che appena si registra qualcuno arriva a me la mail, l'unica autorizzata da mailgun
+    const htmlContent = `
+      <h1>Grazie per esserti registrato!</h1>
+    `;
+
+    await sendEmail(
+      'costantino.grabesu14@gmail.com', 
+      `${newAuthor.email}Ti sei registrato correttamente`,
+      htmlContent
+    );
 
     res.status(201).json(newAuthor)
   } catch (err) {
@@ -101,7 +93,7 @@ router.put("/:id", async (req, res) => {
       new: true, // Restituisce il documento aggiornato anziché quello vecchio
     });
     if(!updatedAuthor) {
-      return res.status(404).json({ message: "Autore non trovato" }); // Se l'utente non esiste, risponde con un errore 404
+      return res.status(404).json({ message: "Autore non trovato" }); 
     } else {
     res.json(updatedAuthor); // Risponde con i dati dell'utente aggiornato in formato JSON
     }
@@ -115,7 +107,7 @@ router.delete("/:id", async (req, res) => {
   try {
     const deleteAuthor = await Author.findByIdAndDelete(req.params.id); // Elimina un utente per ID
     if(!deleteAuthor) {
-      return res.status(404).json({ message: "Post non trovato" }); // Se l'utente non esiste, risponde con un errore 404
+      return res.status(404).json({ message: "Autore non trovato" }); // Se l'utente non esiste, risponde con un errore 404
     } else {
     res.json({ message: "Autore Cancellato Dalla Lista" }); // Risponde con un messaggio di conferma
   }} 
@@ -126,7 +118,7 @@ router.delete("/:id", async (req, res) => {
 
 router.get("/:id/blogPost", async (req, res) => {
   try {
-    const authors = await Author.find({}); // Trova tutti gli utenti nel database
+    const authors = await Author.find({}); // Trova tutti gli autori nel database
     res.json(authors); // Risponde con i dati degli utenti in formato JSON
   } catch (err) {
     res.status(500).json({ message: err.message }); // Gestisce errori e risponde con un messaggio di errore

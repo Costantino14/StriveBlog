@@ -1,7 +1,7 @@
-// routes/authorRoutes.js
+// routes/blogPostRoutes.js
 
-import express from "express"; // Importa il pacchetto Express
-import BlogPost from "../models/BlogPost.js"; // Importa il modello author
+import express from "express"; 
+import BlogPost from "../models/BlogPost.js"; 
 import cors from 'cors'
 import upload from "../middlewares/upload.js";
 import { v2 as cloudinary} from "cloudinary";
@@ -15,21 +15,6 @@ import { sendEmail } from "../services/emailServices.js";
 
 const router = express.Router(); // Crea un router Express
 
-
-//Rotta per ottenere tutti i Post dei blog
-//router.get("/", async (req, res) => {
-//  try {
-//    let query = {};
-//    if(req.query.title) {
-////    query.title = req.query.title; //questa è la ricerca sensitive
-//      query.title = {$regex: req.query.title, options: 'i'} //ricerca insensitive
-//    }
-//    const blogPosts = await BlogPost.find(query); // Trova tutti gli utenti nel database
-//    res.json(blogPosts); // Risponde con i dati degli utenti in formato JSON
-//  } catch (err) {
-//    res.status(500).json({ message: err.message }); // Gestisce errori e risponde con un messaggio di errore
-//  }
-//});
 
 router.get("/", async (req, res) => {
   try {
@@ -59,16 +44,16 @@ router.get("/", async (req, res) => {
 
 
 
-// Rotta per ottenere un singolo utente
+// Rotta per ottenere un singolo post
 router.get("/:id", async (req, res) => {
   try {
-    const blogPost = await BlogPost.findById(req.params.id); // Trova un utente per ID
+    const blogPost = await BlogPost.findById(req.params.id); // Trova un post per ID
     if (!blogPost) {
-      return res.status(404).json({ message: "Post non trovato" }); // Se l'utente non esiste, risponde con un errore 404
+      return res.status(404).json({ message: "Post non trovato" }); 
     } 
-    res.json(blogPost); // Risponde con i dati dell'utente in formato JSON
+    res.json(blogPost); 
   } catch (err) {
-    res.status(500).json({ message: err.message }); // Gestisce errori e risponde con un messaggio di errore
+    res.status(500).json({ message: err.message }); 
   }
 });
 
@@ -98,7 +83,7 @@ router.post("/", cloudinaryUploader.single("cover"), async (req, res) => {
 
     await sendEmail(
       'costantino.grabesu14@gmail.com', // Uso sempre questa email come destinatario perchè è l'unica abilitata, ho questo limite dovuto da mailgun
-      "Il tuo post è stato correttamente pubblicato",
+      "Il post è stato correttamente pubblicato",
       htmlContent
     );
 
@@ -122,9 +107,9 @@ router.put("/:id", async (req, res) => {
       new: true, // Restituisce il documento aggiornato anziché quello vecchio
     });
     if(!updatedBlogPost) {
-      return res.status(404).json({ message: "Post non trovato" }); // Se l'utente non esiste, risponde con un errore 404
+      return res.status(404).json({ message: "Post non trovato" }); 
     } else {
-    res.json(updatedBlogPost); // Risponde con i dati dell'utente aggiornato in formato JSON
+    res.json(updatedBlogPost); 
      } 
   } catch (err) {
     res.status(400).json({ message: err.message }); // Gestisce errori di validazione e risponde con un messaggio di errore
@@ -136,9 +121,9 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
 
-    const blogPost = await BlogPost.findById(req.params.id); // Elimina un utente per ID
+    const blogPost = await BlogPost.findById(req.params.id); // Elimina un post per ID
     if(!blogPost) {
-      return res.status(404).json({ message: "Post non trovato" }); // Se l'utente non esiste, risponde con un errore 404
+      return res.status(404).json({ message: "Post non trovato" }); 
     } 
     
     const publicId = `blog_covers/${blogPost.cover.split('/').pop().split('.')[0]}`;

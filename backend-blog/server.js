@@ -3,14 +3,14 @@ import express from 'express';
 import listEndpoints from 'express-list-endpoints';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import authorRoutes from './routes/authorRoutes.js'; // Importa le rotte
+import authorRoutes from './routes/authorRoutes.js'; 
 import blogPostRoutes from './routes/blogPostRoutes.js';
 import cors from 'cors';
-import authRoutes from "./routes/authRoutes.js"; // Rotte per l'autenticazione
-import session from "express-session"; // NEW! Importiamo session
-import passport from "./Config/passportConfig.js"; // NEW! importiamo passport
+import authRoutes from "./routes/authRoutes.js"; 
+import session from "express-session";
+import passport from "./Config/passportConfig.js"; 
 
-//non più in uso
+//non più in uso li ho voluti tenere per una questione didattica
 
 //import path from 'path';
 //import { fileURLToPath } from "url"; // UPLOAD Per convertire URL in percorsi di file
@@ -58,17 +58,8 @@ app.use(express.json());
 
 app.use(
   session({
-    // Il 'secret' è usato per firmare il cookie di sessione
-    // È importante che sia una stringa lunga, unica e segreta
     secret: process.env.SESSION_SECRET,
-
-    // 'resave: false' dice al gestore delle sessioni di non
-    // salvare la sessione se non è stata modificata
     resave: false,
-
-    // 'saveUninitialized: false' dice al gestore delle sessioni di non
-    // creare una sessione finché non memorizziamo qualcosa
-    // Aiuta a implementare le "login sessions" e riduce l'uso del server di memorizzazione
     saveUninitialized: false,
   })
 );

@@ -27,7 +27,6 @@ passport.use(
             googleId: profile.id,
             nome: profile.name.givenName, 
             cognome: profile.name.familyName,
-            avatar: 'https://i.pinimg.com/236x/61/f5/d9/61f5d9d30d33cfe3d5e6267222a21065.jpg', 
             email: profile.emails[0].value, 
             // La data di nascita la imposto a null
             dataDiNascita: null,
@@ -38,7 +37,6 @@ passport.use(
         }
 
         // Passiamo l'autore al middleware di Passport
-        // Il primo argomento null indica che non ci sono errori
         done(null, author);
       } catch (error) {
         // Se si verifica un errore, lo passiamo a Passport
@@ -87,7 +85,6 @@ passport.use(new GitHubStrategy(
             nome: nome || "GitHub User", // O ci sta il nome, e lo chiamo GitHub User
             cognome: cognome,
             email: email, 
-            avatar: 'https://i.pinimg.com/236x/61/f5/d9/61f5d9d30d33cfe3d5e6267222a21065.jpg', 
             dataDiNascita: null,
           });
          
@@ -106,22 +103,17 @@ passport.use(new GitHubStrategy(
 );
 
 // Serializzazione dell'utente per la sessione
-// Questa funzione determina quali dati dell'utente devono essere memorizzati nella sessione
 passport.serializeUser((user, done) => {
   // Memorizziamo solo l'ID dell'utente nella sessione
   done(null, user.id);
 });
 
 // Deserializzazione dell'utente dalla sessione
-// Questa funzione viene usata per recuperare l'intero oggetto utente basandosi sull'ID memorizzato
 passport.deserializeUser(async (id, done) => {
   try {
-    // Cerchiamo l'utente nel database usando l'ID
     const user = await Author.findById(id);
-    // Passiamo l'utente completo al middleware di Passport
     done(null, user);
   } catch (error) {
-    // Se si verifica un errore durante la ricerca, lo passiamo a Passport
     done(error, null);
   }
 });

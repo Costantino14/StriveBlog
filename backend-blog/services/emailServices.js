@@ -9,7 +9,6 @@ const mg = mailgun({
 
 // Funzione per inviare email
 export const sendEmail = async (to, subject, htmlContent) => {
-  // Prepara i dati dell'email
   const data = {
     from: "Strive Blog <noreply@yourdomain.com>", // Mittente dell'email, si una noreply per non aver risposte
     to, // Destinatario
@@ -20,11 +19,11 @@ export const sendEmail = async (to, subject, htmlContent) => {
   try {
     // Invia l'email usando Mailgun
     const response = await mg.messages().send(data);
-    console.log("Email inviata con successo:", response); //serve solo per essere sicuri che la mail sia partita
-    return response; // Restituisce la risposta di Mailgun
+    console.log("Email inviata con successo:", response); 
+    return response; 
   } catch (err) {
     // Gestione degli errori
     console.error("Errore nell'invio dell'email:", err);
-    throw err; // Rilancia l'errore per permettere la gestione esterna
+    throw err;
   }
 };
