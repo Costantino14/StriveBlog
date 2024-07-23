@@ -12,7 +12,7 @@ passport.use(
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
 
-      // L'URL a cui Google reindizzerà dopo l'autenticazione, lo stesso segnato su google Cloud
+      // L'URL a cui Google reindizzerà dopo l'autenticazione
       callbackURL: `${process.env.BACKEND_URL}/api/auth/google/callback`,
     },
     // Funzione chiamata quando l'autenticazione Google ha successo
@@ -24,10 +24,11 @@ passport.use(
         // Se l'autore non esiste, ne creiamo uno nuovo
         if (!author) {
           author = new Author({
-            googleId: profile.id, // ID univoco fornito da Google
-            nome: profile.name.givenName, // Nome dell'utente 
-            cognome: profile.name.familyName, // Cognome dell'utente
-            email: profile.emails[0].value, // Email principale dell'utente
+            googleId: profile.id,
+            nome: profile.name.givenName, 
+            cognome: profile.name.familyName,
+            avatar: 'https://i.pinimg.com/236x/61/f5/d9/61f5d9d30d33cfe3d5e6267222a21065.jpg', 
+            email: profile.emails[0].value, 
             // La data di nascita la imposto a null
             dataDiNascita: null,
           });
@@ -83,10 +84,10 @@ passport.use(new GitHubStrategy(
         
         author = new Author({
             githubId: profile.id, 
-            nome: nome || "GitHub User", // O ci sta il nome, e lo chia,,o GitHub User
+            nome: nome || "GitHub User", // O ci sta il nome, e lo chiamo GitHub User
             cognome: cognome,
             email: email, 
-
+            avatar: 'https://i.pinimg.com/236x/61/f5/d9/61f5d9d30d33cfe3d5e6267222a21065.jpg', 
             dataDiNascita: null,
           });
          
