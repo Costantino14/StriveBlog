@@ -1,38 +1,42 @@
 import React, { useEffect, useState } from "react";
 import { Card, Col, Image, Container, Row, Pagination } from "react-bootstrap";
 import "./style.css";
-import { getPosts } from "../services/api";
+import { getPosts, getUserData } from "../services/api";
 import { Link } from "react-router-dom";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
   const [search, setSearch] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userData, setUserData] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
-    const checkAuthAndFetchUserData = async () => {
+    const checkAuthAndFetchData = async () => {
       const token = localStorage.getItem("token");
       if (token) {
-        setIsLoggedIn(true);
         try {
-          const data = await getPosts(currentPage, 'createdAt', 'desc');
-          console.log("Dati ricevuti nella Home:", data);
-          setPosts(data.blogPosts);
-          setTotalPages(data.totalPages);
+          const userDataResponse = await getUserData();
+          setUserData(userDataResponse);
+          setIsLoggedIn(true);
+          
+          const postsData = await getPosts(currentPage);
+          setPosts(postsData.blogPosts);
+          setTotalPages(postsData.totalPages);
           setLoaded(true);
         } catch (error) {
-          console.error("Errore nel recupero dei post nella Home:", error);
+          console.error("Errore nel recupero dei dati:", error);
           setIsLoggedIn(false);
+          localStorage.removeItem("token");
         }
       } else {
         setIsLoggedIn(false);
       }
     };
 
-    checkAuthAndFetchUserData();
+    checkAuthAndFetchData();
   }, [currentPage]);
 
   const handlePageChange = (pageNumber) => {
@@ -40,7 +44,7 @@ const Home = () => {
   };
 
   return (
-    <body className="root">
+    <div className="root">
       <Container fluid="sm">
         {!isLoggedIn ? (
           <div className="private-blog">
@@ -115,7 +119,7 @@ const Home = () => {
           </>
         )}
       </Container>
-    </body>
+    </div>
   );
 };
 
