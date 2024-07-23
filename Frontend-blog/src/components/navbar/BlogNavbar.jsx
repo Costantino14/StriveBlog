@@ -19,6 +19,8 @@ const NavBar = (listAuthors) => {
   let nome = "User"
 
   const data = localStorage.getItem("data");
+  console.log(data)
+  console.log(listAuthors)
   
   if (data) {
     const list = listAuthors.listAuthors;
