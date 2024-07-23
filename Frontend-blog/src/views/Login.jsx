@@ -42,44 +42,49 @@ export default function Login() {
     window.location.href = `${API_URL}/api/auth/github`;
   };
 
+
   return (
+    <body className="root">
     <Container className="mt-5">
-      <Row className="justify-content-center">
+      <Row className="row-login">
+        <Col md={6} className="d-none d-md-block">
+          {/* Immagine decorativa */}
+          <div className="background h-100"></div>
+        </Col>
         <Col md={6}>
-          <h2>Login</h2>
-          <Form onSubmit={handleSubmit}>
-            <Form.Group>
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-            <Button type="submit" variant="primary">Login</Button>
-          </Form>
-          <div className="mt-3">
-            <Button onClick={handleGoogleLogin} variant="outline-danger">
-              <FaGoogle /> Login con Google
-            </Button>
-            <Button onClick={handleGitHubLogin} variant="outline-dark" className="ml-2">
-              <FaGithub /> Login con GitHub
-            </Button>
+          <h2 className="mb-4">Bentornato!</h2>
+              <Form onSubmit={handleSubmit}>
+                <Form.Group className="mb-3">
+                  <Form.Control 
+                    type="email" 
+                    size="lg"
+                    placeholder="Scrivi la tua email" 
+                    name="email" 
+                    onChange={handleChange} 
+                    required 
+                  />
+                </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Control 
+                    type="password" 
+                    size="lg"
+                    placeholder="Scrivi la tua Password" 
+                    name="password" 
+                    onChange={handleChange} 
+                    required 
+                  />
+                </Form.Group>
+                <Button variant="dark" size="lg" type="submit" className="w-100">Login</Button>
+              </Form>
+          <div className="text-center mt-3">
+            <p>Or</p>
+            <Button variant="outline-dark" size="lg" className=" w-50" onClick={handleGoogleLogin}><FaGoogle /> Google</Button>
+            <Button variant="outline-dark" size="lg" className="w-50" onClick={handleGitHubLogin}><FaGithub /> GitHub</Button>
           </div>
         </Col>
       </Row>
     </Container>
+    </body>
   );
 }
+
