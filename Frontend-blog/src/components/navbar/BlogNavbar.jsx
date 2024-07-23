@@ -43,7 +43,11 @@ const NavBar = () => {
     localStorage.removeItem("data");
     setIsLoggedIn(false);
     setUserData(null);
-    navigate("/");
+    if (location.pathname === ("/")) {
+      window.location.reload();
+    } else {
+      navigate("/")
+    }
   };
 
   const nome = userData ? userData.nome : "User";
