@@ -7,14 +7,15 @@ import { addComment, deleteComment, getComments, getPost } from "../services/api
 import "./style.css";
 import { AiOutlineComment,} from "react-icons/ai";
 import { HiOutlineTrash } from "react-icons/hi";
-
 import _ from 'lodash';
 
 const Blog = ({ listAuthors }) => {
-  
+  // Ottiene l'ID del post dalla URL
   const { id } = useParams();
+  // Recupera l'email dell'utente loggato dal localStorage
   const emailLogin = localStorage.getItem("data");
 
+  // Stati per gestire vari aspetti del componente
   const [commentsOn, setCommentsOn] = useState(false);
   const [post, setPost] = useState(null);
   const [author, setAuthor] = useState(null);
@@ -22,19 +23,21 @@ const Blog = ({ listAuthors }) => {
   const [columnText, setColumnText] = useState([]);
   const [chComm, setChComm] = useState({content: ""})
 
+  // Stato per un nuovo commento
   const [newComment, setNewComment] = useState({
     name: "",
     email: emailLogin,
     content: "",
   });
 
-
+  // Effetto per caricare il post e i commenti
   useEffect(() => {
     const fetchPostAndComments = async () => {
       try {
         const postResponse = await getPost(id);
         setPost(postResponse.data);
 
+        // Trova l'autore del post nella lista degli autori
         if (postResponse.data && listAuthors) {
           const detailsAuthor = listAuthors.find(
             item => item.email.toLowerCase() === postResponse.data.authorEmail.toLowerCase()
@@ -50,8 +53,9 @@ const Blog = ({ listAuthors }) => {
     };
 
     fetchPostAndComments();
-  }, [id, chComm]);
+  }, [id, chComm, listAuthors]);
 
+  // Effetto per dividere il contenuto del post in colonne
   useEffect(() => {
     if (post && post.content) {
       const words = post.content.split(' ');
@@ -61,15 +65,18 @@ const Blog = ({ listAuthors }) => {
     }
   }, [post]);
 
+  // Gestisce il toggle della visualizzazione dei commenti
   const handleClickBotton = () => {
      setCommentsOn(!commentsOn);
   };
 
+  // Gestisce i cambiamenti nei campi del nuovo commento
   const handleCommentChange = (e) => {
     const { name, value } = e.target;
     setNewComment((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Gestisce l'invio di un nuovo commento
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -82,8 +89,7 @@ const Blog = ({ listAuthors }) => {
     }
   };
 
-
-  // Funzione per cancellare uno dei commenti
+  // Funzione per cancellare un commento
   const handleDeleteComment = async (commentId) => {
     if (!commentId) {
       console.error("Commento non trovato");
@@ -101,6 +107,7 @@ const Blog = ({ listAuthors }) => {
     }
   };
 
+  // Aggiorna un commento nella lista dei commenti
   const updateCommentInList = (commentId, updatedContent) => {
     setComments(prevComments => 
       prevComments.map(comment => 
@@ -109,9 +116,6 @@ const Blog = ({ listAuthors }) => {
     );
     setChComm({ content: updatedContent });
   };
-
-
-
 
   if (!post) return <body className="root">Caricamento...</body>;
 
@@ -125,10 +129,12 @@ const Blog = ({ listAuthors }) => {
           <div className="blog-details-author">
             <Row>
               <Col xs={"auto"} className="pe-0">
+                {/* Mostra l'avatar dell'autore se disponibile, altrimenti usa un'immagine di default */}
                 <Image className="blog-author" src={author? author.avatar : "https://i.pinimg.com/236x/61/f5/d9/61f5d9d30d33cfe3d5e6267222a21065.jpg"} roundedCircle />
               </Col>
               <Col>
                 <div>di</div>
+                {/* Mostra il nome dell'autore se disponibile, altrimenti "Utente" */}
                 <h6>{author? author.nome : "Utente"}</h6>
               </Col>
             </Row>
@@ -139,6 +145,7 @@ const Blog = ({ listAuthors }) => {
           </div>
         </div>
 
+        {/* Renderizza il contenuto del post in colonne */}
         <div className="columnsContainer">
           {columnText.map((column, index) => (
             <div key={index} className="textColumn">
@@ -147,6 +154,7 @@ const Blog = ({ listAuthors }) => {
           ))}
         </div>
 
+        {/* Sezione per i like e i commenti */}
         <div className="d-flex mt-5">
           <BlogLike defaultLikes={["123"]} onChange={console.log} />
           <Button variant={"dark"} className="ms-2" onClick={handleClickBotton}>
@@ -154,6 +162,7 @@ const Blog = ({ listAuthors }) => {
           </Button>
         </div>
 
+        {/* Sezione dei commenti (visibile solo se commentsOn è true) */}
         {commentsOn && (
           <div className="mt-5">
             <h2>Commenti</h2>
@@ -171,7 +180,6 @@ const Blog = ({ listAuthors }) => {
                         updateCommentInList={updateCommentInList}
                       />
                     <Button className="ms-1" variant="outline-danger" onClick={() =>handleDeleteComment(comment._id)}><HiOutlineTrash /></Button></div>)}
-                    
                   </ListGroup.Item>
                 ))
               ) : (
@@ -181,6 +189,7 @@ const Blog = ({ listAuthors }) => {
           </div>
         )}
 
+        {/* Form per aggiungere un nuovo commento */}
         <Form className="mt-5" onSubmit={handleCommentSubmit}>
           <h2>Inserisci un commento:</h2>
           <Form.Group controlId="blog-form" className="mt-3">

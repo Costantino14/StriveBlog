@@ -6,16 +6,20 @@ import { HiOutlineTrash } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 
 export default function Profile() {
+  // Stati per gestire i post e i dati dell'utente
   const [posts, setPosts] = useState([]);
   const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
 
+  // Effetto per recuperare i dati dell'utente e i suoi post al caricamento del componente
   useEffect(() => {
     const fetchUserDataAndPosts = async () => {
       try {
+        // Recupera i dati dell'utente
         const userDataResponse = await getUserData();
         setUserData(userDataResponse);
 
+        // Recupera i post
         const postsData = await getPosts();
         setPosts(postsData.blogPosts);
       } catch (error) {
@@ -27,6 +31,7 @@ export default function Profile() {
     fetchUserDataAndPosts();
   }, [navigate]);
 
+  // Funzione per gestire l'eliminazione dell'account utente
   const handleDeleteAuthor = async (id) => {
     if (!userData) {
       console.error("Autore non trovato");
@@ -47,6 +52,7 @@ export default function Profile() {
     }
   };
 
+  // Funzione per gestire l'eliminazione di un post
   const handleDeletePost = async (id) => {
     if (!id) {
       console.error("Post non trovato");
@@ -55,6 +61,7 @@ export default function Profile() {
     try {
       const response = await deletePost(id);
       if (response) {
+        // Aggiorna lo stato dei post dopo l'eliminazione
         setPosts(prev => prev.filter(post => post._id !== id));
         alert("Post cancellato con successo!")
       } else {
@@ -65,6 +72,7 @@ export default function Profile() {
     }
   };
 
+  // Mostra un messaggio di caricamento se i dati dell'utente non sono ancora disponibili
   if (!userData) {
     return <div>Caricamento...</div>;
   }
@@ -75,6 +83,7 @@ export default function Profile() {
         <div className='profile-center'>
           <h1 className='title-profile'>Profilo</h1>
           
+          {/* Card con i dati del profilo utente */}
           <Card className="profile-card">
             <div className="profile-image-container">
               <Card.Img variant="top" src={userData.avatar} className="profile-image" />
@@ -90,6 +99,7 @@ export default function Profile() {
           </Card>
         </div>
 
+        {/* Mappa e visualizza i post dell'utente */}
         {posts.filter(post => post.authorEmail.toLowerCase() === userData.email.toLowerCase())
           .map((post) => (
             <Card key={post._id} className="post-profile-card horizontal-card">

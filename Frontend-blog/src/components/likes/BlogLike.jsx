@@ -1,3 +1,5 @@
+// ALLORA IL MIO PROGETTO PARTIVA DA QUELLO CHE CI AVEVANO DATO EPICODE....FORSE QUESTA E' L'UNICA PARTE CHE NON HO MODIFICATO
+
 import React, { useState, useEffect } from "react";
 import { AiOutlineLike } from "react-icons/ai";
 import { Button } from "react-bootstrap";

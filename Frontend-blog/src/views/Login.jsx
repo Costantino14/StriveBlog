@@ -8,6 +8,7 @@ import "./style.css";
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5001"
 
 export default function Login() {
+  // Stato per i dati del form
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -16,6 +17,7 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Effetto per gestire il login con token (es. da OAuth)
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const token = params.get("token");
@@ -25,6 +27,7 @@ export default function Login() {
     }
   }, [location, navigate]);
 
+  // Gestisce il login riuscito
   const handleSuccessfulLogin = async (token) => {
     localStorage.setItem("token", token);
     try {
@@ -44,10 +47,12 @@ export default function Login() {
     }
   };
 
+  // Gestisce i cambiamenti nei campi del form
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Gestisce l'invio del form di login
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -63,10 +68,12 @@ export default function Login() {
     }
   };
 
+  // Gestisce il login con Google
   const handleGoogleLogin = () => {
     window.location.href = `${API_URL}/api/auth/google`;
   };
 
+  // Gestisce il login con GitHub
   const handleGitHubLogin = () => {
     window.location.href = `${API_URL}/api/auth/github`;
   };
@@ -115,7 +122,3 @@ export default function Login() {
     </body>
   );
 }
-
-
-
- 

@@ -5,6 +5,7 @@ import { getPosts, getAuthors } from "../services/api";
 import { Link } from "react-router-dom";
 
 const Home = () => {
+  // Stati per gestire i dati e lo stato dell'applicazione
   const [posts, setPosts] = useState([]);
   const [authors, setAuthors] = useState({});
   const [search, setSearch] = useState('');
@@ -14,11 +15,13 @@ const Home = () => {
   const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
+    // Funzione per verificare l'autenticazione e recuperare i dati
     const checkAuthAndFetchData = async () => {
       const token = localStorage.getItem("token");
       if (token) {
         setIsLoggedIn(true);
         try {
+          // Recupera i post e gli autori in parallelo
           const [postsData, authorsData] = await Promise.all([
             getPosts(currentPage, 'createdAt', 'desc'),
             getAuthors()
@@ -27,7 +30,7 @@ const Home = () => {
           setPosts(postsData.blogPosts);
           setTotalPages(postsData.totalPages);
           
-          // Creiamo una mappa degli autori usando le loro email come chiave
+          // Crea una mappa degli autori per un accesso più veloce
           const authorsMap = authorsData.reduce((acc, author) => {
             acc[author.email.toLowerCase()] = author;
             return acc;
@@ -47,10 +50,12 @@ const Home = () => {
     checkAuthAndFetchData();
   }, [currentPage]);
 
+  // Gestisce il cambio di pagina
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
+  // Filtra i post in base alla ricerca
   const filterPosts = (post) => {
     const searchLower = search.toLowerCase();
     return (
@@ -63,12 +68,15 @@ const Home = () => {
     <body className="root">
       <Container fluid="sm">
         {!isLoggedIn ? (
+          // Messaggio per utenti non autenticati
           <div className="private-blog">
             <h2 className="mt-5">Questo è un blog privato,</h2>
             <h2>se vuoi vedere il contenuto devi fare il login o registrarti!</h2>
           </div>
         ) : (
+          // Contenuto per utenti autenticati
           <>
+            {/* Campo di ricerca */}
             <form className="mt-5">
               <input
                 className='ms-2'
@@ -80,6 +88,7 @@ const Home = () => {
               />
             </form>
             <h1 className="blog-main-title mb-3">Benvenuto sullo Strive Blog!</h1>
+            {/* Grid dei post */}
             <Row>
               {posts
                 .filter(filterPosts)
@@ -120,6 +129,7 @@ const Home = () => {
                   );
                 })}
             </Row>
+            {/* Paginazione */}
             <Pagination className="mt-3 justify-content-center">
               <Pagination.Prev 
                 onClick={() => handlePageChange(currentPage - 1)}

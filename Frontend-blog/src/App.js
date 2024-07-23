@@ -35,14 +35,14 @@ function App() {
 
   return (
     <Router>
-      <NavBar listAuthors={listAuthors}/>
+      <NavBar />
       <Routes>
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home />} />
         <Route path="/blog/:id" element={<Blog listAuthors={listAuthors} />} />
         <Route path="/new" element={<NewBlogPost />} />
-        <Route path="/profile" element={<Profile listAuthors={listAuthors} />} />
+        <Route path="/profile" element={<Profile  />} />
       </Routes>
       <Footer />
       

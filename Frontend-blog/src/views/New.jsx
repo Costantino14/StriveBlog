@@ -6,12 +6,12 @@ import { useNavigate } from "react-router-dom";
 import { createPost, getMe } from "../services/api";
 
 const NewBlogPost = (setAuthors, authors) => {
-
+  // Stato per il file di copertina
   const [coverFile, setCoverFile] = useState();
+  // Stato per gestire il caricamento
   const [isLoading, setIsLoading] = useState(false);
 
-
-
+  // Stato per i dati del post
   const [post, setPost] = useState({
     category: "",
     title: "",
@@ -38,7 +38,7 @@ const NewBlogPost = (setAuthors, authors) => {
     }
   };
 
-  //Funzione per caricare il fileCover
+  // Funzione per caricare il fileCover
   const handleFileChange = (e) => {
     setCoverFile(e.target.files[0]);
   };
@@ -47,6 +47,7 @@ const NewBlogPost = (setAuthors, authors) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Creiamo un FormData per inviare i dati, incluso il file
       const formData = new FormData();
       Object.keys(post).forEach((key) => {
         if(key === 'readTime') {
@@ -61,20 +62,20 @@ const NewBlogPost = (setAuthors, authors) => {
         formData.append('cover', coverFile)
       }
   
-      // Aggiungi uno stato di caricamento
+      // Impostiamo lo stato di caricamento
       setIsLoading(true);
   
-      // Invia i dati del post al backend
+      // Inviamo i dati del post al backend
       const response = await createPost(formData);
   
-      // Aspetta un po' prima di reindirizzare
+      // Attendiamo un po' prima di reindirizzare (per UX)
       await new Promise(resolve => setTimeout(resolve, 2000));
   
       setIsLoading(false);
   
-      // Verifica la risposta prima di navigare
+      // Verifichiamo la risposta prima di navigare
       if (response && response.data) {
-        // Naviga alla rotta della home dopo la creazione del post
+        // Navighiamo alla home dopo la creazione del post
         navigate("/");
       } else {
         throw new Error("Risposta non valida dal server");
@@ -82,33 +83,31 @@ const NewBlogPost = (setAuthors, authors) => {
     } catch (error) {
       setIsLoading(false);
       console.error("Errore nella creazione del post:", error);
-      // Mostra un messaggio di errore all'utente
+      // Mostriamo un messaggio di errore all'utente
       alert("Si è verificato un errore durante la creazione del post. Riprova.");
     }
   };
 
-// UseEffect per l'autenticazione
-useEffect(() => {
-  const fetchUserEmail = async () => {
-    try {
-      const userData = await getMe();
-      setPost((prevPost) => ({ ...prevPost, authorEmail: userData.email }));
-    } catch (error) {
-      console.error("Errore nel recupero dei dati utente:", error);
-      navigate("/login");
-    }
-  };
-  fetchUserEmail();
-}, [navigate]);
-
-  
- 
+  // UseEffect per l'autenticazione e recupero email utente
+  useEffect(() => {
+    const fetchUserEmail = async () => {
+      try {
+        const userData = await getMe();
+        setPost((prevPost) => ({ ...prevPost, authorEmail: userData.email }));
+      } catch (error) {
+        console.error("Errore nel recupero dei dati utente:", error);
+        navigate("/login");
+      }
+    };
+    fetchUserEmail();
+  }, [navigate]);
 
   return (
     <body className="root">
     <Container className="new-blog-container">
       <Form className="mt-5" onSubmit={handleSubmit}>
         <h2>Articolo</h2>
+        {/* Campo per il titolo del post */}
         <Form.Group controlId="blog-form" className="mt-3">
           <Form.Label>Titolo</Form.Label>
           <Form.Control 
@@ -119,6 +118,7 @@ useEffect(() => {
             onChange={handleChange} 
           />
         </Form.Group>
+        {/* Selezione della categoria del post */}
         <Form.Group controlId="blog-category" className="mt-3">
           <Form.Label>Categoria</Form.Label>
           <Form.Control 
@@ -137,6 +137,7 @@ useEffect(() => {
           </Form.Control>
         </Form.Group>
         <Row className="mt-3">
+          {/* Campo per caricare l'immagine di copertina */}
           <Form.Group as={Col} md="4" controlId="validationCustom01">
             <Form.Label>Cover</Form.Label>
             <Form.Control
@@ -145,11 +146,11 @@ useEffect(() => {
               type="file"
               placeholder="URL immagine"
               name="cover"
-              //value={post.cover} non serve più
               onChange={handleFileChange}
             />
             <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
           </Form.Group>
+          {/* Campo per il tempo di lettura */}
           <Form.Group as={Col} md="4" controlId="validationCustom02">
             <Form.Label>Tempo di lettura</Form.Label>
             <Form.Control
@@ -163,6 +164,7 @@ useEffect(() => {
             />
             <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
           </Form.Group>
+          {/* Campo per l'email dell'autore (readonly) */}
           <Form.Group as={Col} md="4" controlId="validationCustomUsername">
             <Form.Label>Email Autore</Form.Label>
             <InputGroup hasValidation>
@@ -173,8 +175,6 @@ useEffect(() => {
                 aria-describedby="inputGroupPrepend"
                 name="authorEmail"
                 value={post.authorEmail}
-                //onChange={handleChange} non ci serve piu
-                //required
                 readOnly
               />
               <Form.Control.Feedback type="invalid">
@@ -183,6 +183,7 @@ useEffect(() => {
             </InputGroup>
           </Form.Group>
         </Row>
+        {/* Campo per il contenuto del post */}
         <Form.Group controlId="blog-content" className="mt-3">
           <Form.Label>Testo articolo</Form.Label>
           <Form.Control
@@ -193,6 +194,7 @@ useEffect(() => {
             required
           />
         </Form.Group>
+        {/* Pulsanti di reset e invio */}
         <Form.Group className="d-flex my-5 justify-content-end">
           <Button type="reset" size="lg" variant="outline-dark">
             Reset

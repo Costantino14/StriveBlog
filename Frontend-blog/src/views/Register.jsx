@@ -1,6 +1,6 @@
-import { useState } from "react"; // Importa il hook useState da React per gestire lo stato del componente
-import { useNavigate } from "react-router-dom"; // Importa useNavigate da react-router-dom per navigare tra le pagine
-import { registerUser } from "../services/api"; // Importa la funzione registerUser dal file api.js per effettuare la registrazione
+import { useState } from "react"; 
+import { useNavigate } from "react-router-dom"; 
+import { registerUser } from "../services/api"; 
 import { Container, Card, Button, Form, InputGroup, Row , Col} from "react-bootstrap";
 import "./style.css";
 
@@ -30,7 +30,6 @@ const Register = () => {
 
   // Gestore per aggiornare lo stato quando i campi del form cambiano
   const handleChange = (e) => {
-    // Aggiorna il campo corrispondente nello stato con il valore attuale dell'input
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
