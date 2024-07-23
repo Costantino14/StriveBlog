@@ -28,7 +28,15 @@ api.interceptors.request.use(
 );
 
 // Funzioni per le operazioni CRUD di author
-export const getAuthors = () => api.get("/author");
+export const getAuthors = async () => {
+  try {
+    const response = await api.get("/author");
+    return response.data.authors;
+  } catch (error) {
+    console.error("Errore nel recupero degli autori:", error);
+    throw error;
+  }
+};
 export const getAuthor = (id) => api.get(`/author/${id}`);
 export const registerUser = (authorData) => 
   api.post("/author", authorData, {
