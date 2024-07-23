@@ -8,6 +8,9 @@ import { createPost, getMe } from "../services/api";
 const NewBlogPost = (setAuthors, authors) => {
 
   const [coverFile, setCoverFile] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+
+
 
   const [post, setPost] = useState({
     category: "",
@@ -57,12 +60,30 @@ const NewBlogPost = (setAuthors, authors) => {
       if(coverFile) {
         formData.append('cover', coverFile)
       }
+  
+      // Aggiungi uno stato di caricamento
+      setIsLoading(true);
+  
       // Invia i dati del post al backend
-      await createPost(formData);
-      // Naviga alla rotta della home dopo la creazione del post
-      navigate("/");
+      const response = await createPost(formData);
+  
+      // Aspetta un po' prima di reindirizzare
+      await new Promise(resolve => setTimeout(resolve, 2000));
+  
+      setIsLoading(false);
+  
+      // Verifica la risposta prima di navigare
+      if (response && response.data) {
+        // Naviga alla rotta della home dopo la creazione del post
+        navigate("/");
+      } else {
+        throw new Error("Risposta non valida dal server");
+      }
     } catch (error) {
-      console.error("Errore dettagliato nella creazione del post:", error.response?.data || error);
+      setIsLoading(false);
+      console.error("Errore nella creazione del post:", error);
+      // Mostra un messaggio di errore all'utente
+      alert("Si è verificato un errore durante la creazione del post. Riprova.");
     }
   };
 
@@ -181,8 +202,9 @@ useEffect(() => {
             size="lg"
             variant="dark"
             className="new-blog-button"
-          >
-            Invia
+            disabled={isLoading}
+            >
+            {isLoading ? 'Caricamento...' : 'Invia'}
           </Button>
         </Form.Group>
       </Form>

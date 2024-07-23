@@ -44,12 +44,19 @@ export const deleteAuthor = (id) => api.delete(`/author/${id}`);
 // Funzioni per le operazioni CRUD di blogPost : GET, GET SINGOLO, POST, PUT, DELETE
 export const getPosts = () => api.get("/blogPost");
 export const getPost = (id) => api.get(`/blogPost/${id}`);
-export const createPost = (postData) =>
-        api.post("/blogPost", postData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });      
+export const createPost = async (postData) => {
+  try {
+    const response = await api.post("/blogPost", postData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response;
+  } catch (error) {
+    console.error("Errore nella creazione del post:", error);
+    throw error;
+  }
+};     
 export const updatePost = (id, postData) =>
         api.put(`/blogPosts/${id}`, postData);
 export const deletePost = (id) => api.delete(`/blogPost/${id}`);
