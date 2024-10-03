@@ -16,27 +16,31 @@ const Home = ({ listAuthors }) => {
   const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
-    const checkAuthAndFetchData = async () => {
+    const fetchData = async () => {
       const token = localStorage.getItem("token");
       if (token) {
         try {
           await getUserData();
           setIsLoggedIn(true);
-
-          const postsData = await getTravelPosts(currentPage, 'createdAt', 'desc');
-          setTravelPosts(postsData.travelPosts);
-          setTotalPages(postsData.totalPages);
         } catch (error) {
-          console.error("Errore nel recupero dei dati nella Home:", error);
+          console.error("Errore nel recupero dei dati utente:", error);
           setIsLoggedIn(false);
           localStorage.removeItem("token");
         }
       } else {
         setIsLoggedIn(false);
       }
+  
+      try {
+        const postsData = await getTravelPosts(currentPage, 'createdAt', 'desc');
+        setTravelPosts(postsData.travelPosts);
+        setTotalPages(postsData.totalPages);
+      } catch (error) {
+        console.error("Errore nel recupero dei post:", error);
+      }
     };
-
-    checkAuthAndFetchData();
+  
+    fetchData();
   }, [currentPage]);
 
   const handlePageChange = (pageNumber) => {
