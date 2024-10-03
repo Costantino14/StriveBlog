@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Form, Badge, Card, Pagination } from "react-bootstrap";
+import { Container, Form, Badge, Card, Pagination } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaSearch, FaMapMarkerAlt, FaCalendarAlt, FaMoneyBillWave, FaUser } from "react-icons/fa";
 import { getTravelPosts, getUserData } from "../services/api";
-import Block from "../components/Block";
 import ReactMarkdown from 'react-markdown';
 import "./style.css";
 
@@ -81,10 +80,6 @@ const Home = ({ listAuthors }) => {
 </div>
 
       <Container>
-        {!isLoggedIn ? (
-          <Block />
-        ) : (
-          <>
             <div className="timeline">
               {travelPosts
                 .filter(filterPosts)
@@ -156,8 +151,6 @@ const Home = ({ listAuthors }) => {
                 disabled={currentPage === totalPages}
               />
             </Pagination>
-          </>
-        )}
       </Container>
     </div>
   );
