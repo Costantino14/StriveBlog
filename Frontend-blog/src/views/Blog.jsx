@@ -25,15 +25,25 @@ const Blog = () => {
   useEffect(() => {
     const fetchPostAndComments = async () => {
       try {
-        const userDataResponse = await getUserData();
-        setEmailUtente(userDataResponse.email);
-        setNewComment(prev => ({ ...prev, name: userDataResponse.nome, email: userDataResponse.email }));
+        // Prova a ottenere i dati dell'utente, ma non bloccare se fallisce
+        try {
+          const userDataResponse = await getUserData();
+          setEmailUtente(userDataResponse.email);
+          setNewComment(prev => ({ ...prev, name: userDataResponse.nome, email: userDataResponse.email }));
+        } catch (userError) {
+          console.error("Utente non autenticato:", userError);
+          // Non bloccare l'esecuzione se l'utente non è autenticato
+        }
+  
+        // Recupera sempre i dati del post e i commenti
         const postResponse = await getTravelPost(id);
         setPost(postResponse.data);
         const commentsResponse = await getTravelPostComments(id);
         setComments(commentsResponse);
       } catch (error) {
         console.error("Errore nel recupero del post di viaggio o dei commenti:", error);
+        // Potresti voler impostare uno stato di errore qui
+        setPost(null); // o { error: true } per indicare che c'è stato un errore
       }
     };
   
