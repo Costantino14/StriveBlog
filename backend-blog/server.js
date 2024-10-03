@@ -4,7 +4,7 @@ import listEndpoints from 'express-list-endpoints';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import authorRoutes from './routes/authorRoutes.js'; 
-import blogPostRoutes from './routes/blogPostRoutes.js';
+import travelPostRoutes from './routes/travelPostRoutes.js';
 import cors from 'cors';
 import authRoutes from "./routes/authRoutes.js"; 
 import session from "express-session";
@@ -82,7 +82,7 @@ app.get('/', (req, res) => {
 // Use per le rotte create:
 app.use("/api/auth", authRoutes);
 app.use('/api/author', authorRoutes);
-app.use('/api/blogPost', blogPostRoutes);
+app.use('/api/travel-posts', travelPostRoutes);
 
 // Definizione della porta su cui il server ascolterà
 const PORT = process.env.PORT || 5000;

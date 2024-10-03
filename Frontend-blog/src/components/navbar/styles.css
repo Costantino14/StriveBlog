@@ -1,21 +1,11 @@
-/*Modifiche estetiche della navBar*/
+.blog-navbar {
+  background-color: #677D6A;
+  box-shadow: 0 2px 4px rgba(222, 222, 222, 0.5);
+  padding: 10px 0;
+}
 
 .blog-navbar-brand {
-  width: 180px;
-}
-
-.blog-navbar {
-  padding-top: 25px;
-  padding-bottom: 25px;
-  background-color: #677D6A;
-  -webkit-box-shadow: 2px 0px 18px 1px rgba(222, 222, 222, 1);
-  -moz-box-shadow: 2px 0px 18px 1px rgba(222, 222, 222, 1);
-  box-shadow: 2px 0px 4px 1px rgba(222, 222, 222, 1);
-}
-
-.dropdownItem {
-  width: 250px;
-  font-size: large;
+  width: 350px;
 }
 
 .blog-navbar-add-button {
@@ -25,4 +15,9 @@
   width: 140px;
   text-decoration: none;
   margin-left: 5px;
+}
+
+.dropdownItem {
+  width: 250px;
+  font-size: large;
 }

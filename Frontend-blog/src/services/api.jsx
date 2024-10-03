@@ -1,29 +1,24 @@
 import axios from "axios";
 
 // Definiamo l'url di base'
-//const API_URL = "http://localhost:5001/api";
+const API_URL = "http://localhost:5001/api";
 
-const API_URL = "https://striveblog-uz2c.onrender.com/api";
+//const API_URL = "https://striveblog-uz2c.onrender.com/api" || "http://localhost:5001/api" ;
 
-// Configura un'istanza di axios con l'URL di base
 const api = axios.create({
   baseURL: API_URL,
 });
 
-// Interceptor per includere il token in tutte le richieste
 api.interceptors.request.use(
   (config) => {
-    // Recupera il token dalla memoria locale
     const token = localStorage.getItem("token");
     if (token) {
-      // Se il token esiste, aggiungilo all'header di autorizzazione
       config.headers["Authorization"] = `Bearer ${token}`;
-      console.log("Token inviato:", token); 
+      console.log("Token inviato:", token);
     }
-    return config; 
+    return config;
   },
   (error) => {
-    // Gestisce eventuali errori durante l'invio della richiesta
     return Promise.reject(error);
   }
 );
@@ -32,7 +27,7 @@ api.interceptors.request.use(
 export const getAuthors = async () => {
   try {
     const response = await api.get("/author");
-    return response.data.authors;
+    return response.data;
   } catch (error) {
     console.error("Errore nel recupero degli autori:", error);
     throw error;
@@ -45,57 +40,124 @@ export const registerUser = (authorData) =>
       "Content-Type": "multipart/form-data",
     },
   }); 
-export const updateAuthor = (id, authorData) =>
-        api.put(`/author/${id}`, authorData);
+
+  export const updateProfile = async (id, userData) => {
+    try {
+      console.log('Inviando dati al backend:', id, userData);
+      
+      const formData = new FormData();
+      
+      // Aggiungi tutti i campi al FormData
+      Object.keys(userData).forEach(key => {
+        if (key === 'avatar' && userData[key] instanceof File) {
+          formData.append('avatar', userData[key]);
+        } else {
+          formData.append(key, userData[key]);
+        }
+      });
+  
+      // Log del contenuto di FormData
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
+  
+      const response = await api.patch(`/author/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log('Risposta dal backend:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Errore nell'aggiornamento del profilo:", error);
+      throw error;
+    }
+  };
+
 export const deleteAuthor = (id) => api.delete(`/author/${id}`);
 
 
-// Funzioni per le operazioni CRUD di blogPost : GET, GET SINGOLO, POST, PUT, DELETE
+// Funzioni per le operazioni CRUD di TRAVELPOSTS : GET, GET SINGOLO, POST, PUT, DELETE
 
-export const getPosts = async (page = 1, sort = 'createdAt', order = 'desc') => {
+export const getTravelPosts = async (page = 1, sort = 'createdAt', order = 'desc') => {
   try {
-    const response = await api.get(`/blogPost?page=${page}&sort=${sort}&order=${order}`);
-    return response.data;
+    const response = await api.get(`/travel-posts?page=${page}&sort=${sort}&order=${order}`);
+    return response.data || null;
   } catch (error) {
-    console.error("Errore nel recupero dei post:", error);
+    console.error("Errore nel recupero dei post di viaggio:", error);
     throw error;
   }
 };
-export const getPost = (id) => api.get(`/blogPost/${id}`);
-export const createPost = async (postData) => {
+
+export const getTravelPost = (id) => api.get(`/travel-posts/${id}`);
+
+// Funzione di utilità per visualizzare il contenuto di FormData
+const logFormData = (formData) => {
+  for (let [key, value] of formData.entries()) {
+    console.log(key, value);
+  }
+};
+
+export const createTravelPost = async (postData, coverImage, cityImages) => {
+  console.log('Api: postData:', postData, ', cover:', coverImage, ', città:', cityImages);
   try {
-    const response = await api.post("/blogPost", postData, {
+    const formData = new FormData();
+    formData.append('postData', JSON.stringify(postData));
+    
+    if (coverImage) {
+      formData.append('coverImage', coverImage);
+    }
+
+    cityImages.forEach((cityImageArray, cityIndex) => {
+      cityImageArray.forEach((image, imageIndex) => {
+        formData.append(`cityImages[${cityIndex}]`, image);
+      });
+    });
+
+    const response = await api.post("/travel-posts", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
     return response;
   } catch (error) {
-    console.error("Errore nella creazione del post:", error);
+    console.error("Errore nella creazione del post di viaggio:", error);
     throw error;
   }
-};     
-export const updatePost = (id, postData) =>
-        api.put(`/blogPosts/${id}`, postData);
-export const deletePost = (id) => api.delete(`/blogPost/${id}`);
+};
 
+export const updateTravelPost = async (id, postData) => {
+  try {
+    console.log("Inizio updateTravelPost con id:", id);
+    console.log("Dati del post da inviare:", postData);
 
+    // Invia direttamente l'oggetto postData, senza usare FormData
+    const response = await api.put(`/travel-posts/${id}`, postData);
+    console.log("Risposta ricevuta:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Errore nell'aggiornamento del post di viaggio:", error);
+    throw error;
+  }
+};
 
-// Funzioni per gestire i commenti :
-export const getComments = (postId) =>
-        api.get(`/blogPost/${postId}/comments`).then((response) => response.data);
-export const addComment = (postId, commentData) =>
-        api.post(`/blogPost/${postId}/comments`, commentData)
-        .then((response) => response.data);
-export const getComment = (postId, commentId) =>
-        api.get(`/blogPost/${postId}/comments/${commentId}`)
-        .then((response) => response.data);
-export const updateComment = (postId, commentId, commentData) =>
-        api.put(`/blogPost/${postId}/comments/${commentId}`, commentData)
-        .then((response) => response.data);
-export const deleteComment = (postId, commentId) =>
-        api.delete(`/blogPost/${postId}/comments/${commentId}`)
-        .then((response) => response.data);
+export const deleteTravelPost = (id) => api.delete(`/travel-posts/${id}`);
+
+// Funzioni aggiornate per gestire i commenti dei TravelPost
+export const getTravelPostComments = (postId) =>
+  api.get(`/travel-posts/${postId}/comments`).then((response) => response.data);
+
+export const addTravelPostComment = (postId, commentData) =>
+  api.post(`/travel-posts/${postId}/comments`, commentData)
+    .then((response) => response.data);
+
+export const updateTravelPostComment = (postId, commentId, commentData) =>
+  api.put(`/travel-posts/${postId}/comments/${commentId}`, commentData)
+    .then((response) => response.data);
+
+export const deleteTravelPostComment = (postId, commentId) =>
+  api.delete(`/travel-posts/${postId}/comments/${commentId}`)
+    .then((response) => response.data);
 
 
 

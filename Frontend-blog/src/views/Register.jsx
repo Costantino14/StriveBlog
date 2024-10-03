@@ -44,6 +44,7 @@ const Register = () => {
     if (avatarFile) {
       formDataToSend.append('avatar', avatarFile);
     }
+      console.log(formDataToSend)
       await registerUser(formDataToSend); // Chiama la funzione registerUser con i dati del form
       alert("Registrazione avvenuta con successo!"); // Mostra un messaggio di successo
       navigate("/login"); // Naviga alla pagina di login dopo la registrazione

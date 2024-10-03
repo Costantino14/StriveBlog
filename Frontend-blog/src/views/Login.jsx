@@ -86,7 +86,7 @@ export default function Login() {
           {/* Immagine decorativa */}
           <div className="background h-100"></div>
         </Col>
-        <Col md={6}>
+        <Col md={6} id="contenitore-login">
           <h2 className="mb-4">Bentornato!</h2>
               <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3">

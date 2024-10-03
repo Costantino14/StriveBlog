@@ -1,46 +1,36 @@
 import React, { useEffect, useState } from "react";
-import { Card, Col, Image, Container, Row, Pagination } from "react-bootstrap";
-import "./style.css";
-import { getPosts, getAuthors } from "../services/api";
+import { Container, Row, Col, Form, Badge, Card, Pagination } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { FaSearch, FaMapMarkerAlt, FaCalendarAlt, FaMoneyBillWave, FaUser } from "react-icons/fa";
+import { getTravelPosts, getUserData } from "../services/api";
+import Block from "../components/Block";
+import ReactMarkdown from 'react-markdown';
+import "./style.css";
 
-const Home = () => {
-  // Stati per gestire i dati e lo stato dell'applicazione
-  const [posts, setPosts] = useState([]);
-  const [authors, setAuthors] = useState({});
+
+const Home = ({ listAuthors }) => {
+  const [travelPosts, setTravelPosts] = useState([]);
   const [search, setSearch] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loaded, setLoaded] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
-    // Funzione per verificare l'autenticazione e recuperare i dati
     const checkAuthAndFetchData = async () => {
       const token = localStorage.getItem("token");
       if (token) {
-        setIsLoggedIn(true);
         try {
-          // Recupera i post e gli autori in parallelo
-          const [postsData, authorsData] = await Promise.all([
-            getPosts(currentPage, 'createdAt', 'desc'),
-            getAuthors()
-          ]);
-          console.log("Dati ricevuti nella Home:", postsData);
-          setPosts(postsData.blogPosts);
+          await getUserData();
+          setIsLoggedIn(true);
+
+          const postsData = await getTravelPosts(currentPage, 'createdAt', 'desc');
+          setTravelPosts(postsData.travelPosts);
           setTotalPages(postsData.totalPages);
-          
-          // Crea una mappa degli autori per un accesso più veloce
-          const authorsMap = authorsData.reduce((acc, author) => {
-            acc[author.email.toLowerCase()] = author;
-            return acc;
-          }, {});
-          setAuthors(authorsMap);
-          
-          setLoaded(true);
         } catch (error) {
           console.error("Errore nel recupero dei dati nella Home:", error);
           setIsLoggedIn(false);
+          localStorage.removeItem("token");
         }
       } else {
         setIsLoggedIn(false);
@@ -50,87 +40,104 @@ const Home = () => {
     checkAuthAndFetchData();
   }, [currentPage]);
 
-  // Gestisce il cambio di pagina
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  // Filtra i post in base alla ricerca
   const filterPosts = (post) => {
     const searchLower = search.toLowerCase();
-    return (
-      post.title.toLowerCase().startsWith(searchLower) ||
-      post.authorEmail.toLowerCase().startsWith(searchLower)
-    );
+    return post.cities.some(city => city.name.toLowerCase().includes(searchLower));
+  };
+
+  const getAuthorDetails = (authorEmail) => {
+    return listAuthors.find(author => author.email === authorEmail) || {};
   };
 
   return (
-    <body className="root">
-      <Container fluid="sm">
+    <div className="root">
+      <div className="hero-section">
+  <Container>
+    <div className="hero-content">
+      <h1 className="hero-title">Gallivan<strong id="special-t">T</strong>ales</h1>
+      <h2 className="hero-subtitle">Esplora il mondo attraverso gli occhi dei viaggiatori</h2>
+      <p className="hero-description">
+        Benvenuto su GallivanTales, la piattaforma dove i viaggiatori condividono le loro avventure.
+        Scopri itinerari unici, consigli preziosi e lasciati ispirare per il tuo prossimo viaggio.
+      </p>
+      <Form className="hero-search-form">
+        <div className="position-relative">
+          <Form.Control
+            placeholder='Cerca una città...'
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="hero-search-input"
+          />
+          <FaSearch className="hero-search-icon" />
+        </div>
+      </Form>
+    </div>
+  </Container>
+</div>
+
+      <Container>
         {!isLoggedIn ? (
-          // Messaggio per utenti non autenticati
-          <div className="private-blog">
-            <h2 className="mt-5">Questo è un blog privato,</h2>
-            <h2>se vuoi vedere il contenuto devi fare il login o registrarti!</h2>
-          </div>
+          <Block />
         ) : (
-          // Contenuto per utenti autenticati
           <>
-            {/* Campo di ricerca */}
-            <form className="mt-5">
-              <input
-                className='ms-2'
-                placeholder='Cerca per titoli:'
-                type="text"
-                name="name" 
-                value={search}
-                onChange={(e) => setSearch(e.target.value)} 
-              />
-            </form>
-            <h1 className="blog-main-title mb-3">Benvenuto sullo Strive Blog!</h1>
-            {/* Grid dei post */}
-            <Row>
-              {posts
+            <div className="timeline">
+              {travelPosts
                 .filter(filterPosts)
-                .map((post) => {
-                  const author = authors[post.authorEmail.toLowerCase()];
+                .map((post, index) => {
+                  const author = getAuthorDetails(post.author);
                   return (
-                    <Col
-                      key={`item-${post._id}`}
-                      xs={12}
-                      md={6}
-                      lg={4}
-                      className={`blog-coll ${loaded ? "fade-in" : ""}`}
+                    <motion.div
+                      key={post._id}
+                      className="timeline-item"
+                      initial={{ opacity: 0, y: 50 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
                     >
-                      <Link to={`/blog/${post._id}`} className="blog-link">
-                        <Card className="blog-card">
-                          <Card.Img variant="top" src={post.cover} className="blog-cover" />
+                      <Badge bg="primary" className="timeline-date">
+                        <FaCalendarAlt className="me-1" />
+                        {new Date(post.createdAt).toLocaleDateString()}
+                      </Badge>
+                      <Card className="timeline-content">
+                        <Link to={`/blog/${post._id}`} className="text-decoration-none text-dark">
+                          <Card.Img variant="top" src={post.coverImage} className="timeline-img" />
                           <Card.Body>
                             <Card.Title>{post.title}</Card.Title>
+                            <div className="timeline-info mb-3">
+                              <Badge bg="primary" className="me-2">
+                                <FaCalendarAlt className="me-1" />
+                                {new Date(post.startDate).toLocaleDateString()} - {new Date(post.endDate).toLocaleDateString()}
+                              </Badge>
+                              <Badge bg="warning" text="dark">
+                                <FaMoneyBillWave className="me-1" />
+                                {post.estimatedCost.amount} {post.estimatedCost.currency}
+                              </Badge>
+                            </div>
+                            <div className="timeline-cities mb-3">
+                              {post.cities.map((city, cityIndex) => (
+                                <Badge bg="info" key={cityIndex} className="me-1 mb-1">
+                                  <FaMapMarkerAlt className="me-1" />{city.name}
+                                </Badge>
+                              ))}
+                            </div>
+                            <Card.Text as={ReactMarkdown}>{post.description}</Card.Text>
+                            <div className="timeline-author mt-3">
+                              <FaUser className="me-2" />
+                              <small>{author.nome && author.cognome ? `${author.nome} ${author.cognome}` : "Autore sconosciuto"}</small>
+                            </div>
                           </Card.Body>
-                          <Card.Footer>
-                            <Row>
-                              <Col xs={"auto"} className="pe-0">
-                                <Image 
-                                  className="blog-author" 
-                                  src={author ? author.avatar : 'https://i.pinimg.com/236x/61/f5/d9/61f5d9d30d33cfe3d5e6267222a21065.jpg'} 
-                                  roundedCircle 
-                                />
-                              </Col>
-                              <Col>
-                                <div>di</div>
-                                <h6>{author ? `${author.nome} ${author.cognome}` : post.authorEmail}</h6>
-                              </Col>
-                            </Row>
-                          </Card.Footer>
-                        </Card>
-                      </Link>
-                    </Col>
+                        </Link>
+                      </Card>
+                    </motion.div>
                   );
                 })}
-            </Row>
-            {/* Paginazione */}
-            <Pagination className="mt-3 justify-content-center">
+            </div>
+
+            <Pagination className="mt-5 justify-content-center">
               <Pagination.Prev 
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
@@ -152,7 +159,7 @@ const Home = () => {
           </>
         )}
       </Container>
-    </body>
+    </div>
   );
 };
 

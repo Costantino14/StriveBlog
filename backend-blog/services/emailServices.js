@@ -1,5 +1,8 @@
 // Importa il modulo mailgun-js per l'invio di email
 import mailgun from "mailgun-js";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // Configura l'istanza di Mailgun con le credenziali dall'ambiente
 const mg = mailgun({

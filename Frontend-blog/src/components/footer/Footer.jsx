@@ -12,7 +12,7 @@ const Footer = (props) => {
         backgroundColor: "#D6BD98",
       }}
     >
-      <Container>{`${new Date().getFullYear()} - © Strive School | Developed for homework projects.`}</Container>
+      <Container>{`${new Date().getFullYear()} - © GallivanTales | Developed for homework projects.`}</Container>
     </footer>
   );
 };

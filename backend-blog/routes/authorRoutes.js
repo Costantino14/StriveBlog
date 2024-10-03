@@ -2,9 +2,9 @@
 
 import express from "express"; 
 import Author from "../models/Author.js"; 
-import BlogPost from "../models/BlogPost.js";
+import TravelPost from "../models/TravelPost.js";
 import { v2 as cloudinary} from "cloudinary";
-import cloudinaryUploader from "../Config/cloudinaryConfig.js";
+import cloudinaryUploader1 from "../Config/cloudinaryConfig1.js";
 import { sendEmail } from "../services/emailServices.js";
 
 const router = express.Router(); // Crea un router Express
@@ -13,24 +13,8 @@ const router = express.Router(); // Crea un router Express
 
 router.get("/", async (req, res) => {
   try {
-     const page = parseInt(req.query.page) || 1;
-     const limit = parseInt(req.query.limit) || 10;
-     const sort = req.query.sort || 'cognome';  
-     const sortDirection = req.query.sortDirection === 'desc' ? -1 : 1;
-     const skip= (page -1)*limit;
-     const authors =  await Author.find({}) // Trova tutti gli utenti/autori nel database
-      .sort({[sort]: sortDirection})
-      .skip(skip)
-      .limit(limit)
-
-    const total= await Author.countDocuments();
-
-    res.json({
-      authors,
-      currentPage: page,
-      totalPages: Math.ceil(total / limit),
-      totalAuthors: total
-  });
+     const authors =  await Author.find() // Trova tutti gli utenti/autori nel database
+     res.json(authors);
 
   } catch (err) {
     res.status(500).json({ message: err.message }); // Gestisce errori e risponde con un messaggio di errore
@@ -53,7 +37,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // Rotta per creare un nuovo utente
-router.post('/', cloudinaryUploader.single('avatar'), async (req,res) => {
+router.post('/', cloudinaryUploader1.single('avatar'), async (req,res) => {
   try {
     const authorData = req.body;
     if(req.file) {
@@ -87,18 +71,32 @@ router.post('/', cloudinaryUploader.single('avatar'), async (req,res) => {
 })
 
 // Rotta per aggiornare un utente
-router.put("/:id", async (req, res) => {
+router.patch("/:id", cloudinaryUploader1.single('avatar'), async (req, res) => {
   try {
-    const updatedAuthor = await Author.findByIdAndUpdate(req.params.id, req.body, {
-      new: true, // Restituisce il documento aggiornato anziché quello vecchio
+    console.log('Richiesta di aggiornamento ricevuta:', req.params.id);
+    console.log('Corpo della richiesta:', req.body);
+    console.log('File ricevuto:', req.file);
+    
+    const updateData = { ...req.body };
+    
+    // Se c'è un file avatar, gestiscilo qui
+    if (req.file) {
+      updateData.avatar = req.file.path;
+    }
+
+    const updatedAuthor = await Author.findByIdAndUpdate(req.params.id, updateData, {
+      new: true,
     });
     if(!updatedAuthor) {
+      console.log('Autore non trovato');
       return res.status(404).json({ message: "Autore non trovato" }); 
     } else {
-    res.json(updatedAuthor); // Risponde con i dati dell'utente aggiornato in formato JSON
+      console.log('Autore aggiornato:', updatedAuthor);
+      return res.json(updatedAuthor);
     }
   } catch (err) {
-    res.status(400).json({ message: err.message }); // Gestisce errori di validazione e risponde con un messaggio di errore
+    console.error('Errore durante l\'aggiornamento:', err);
+    res.status(400).json({ message: err.message });
   }
 });
 
@@ -116,7 +114,7 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-router.get("/:id/blogPost", async (req, res) => {
+router.get("/:id/travelPost", async (req, res) => {
   try {
     const authors = await Author.find({}); // Trova tutti gli autori nel database
     res.json(authors); // Risponde con i dati degli utenti in formato JSON
@@ -127,7 +125,7 @@ router.get("/:id/blogPost", async (req, res) => {
 
 
 // PATCH /authors/:authorId/avatar: carica un'immagine avatar per l'autore specificato
-router.patch("/:id/avatar", cloudinaryUploader.single("avatar"), async (req, res) => {
+router.patch("/:id/avatar", cloudinaryUploader1.single("avatar"), async (req, res) => {
   try {
     // Verifica se è stato caricato un file, se non l'ho caricato rispondo con un 400
     if (!req.file) {

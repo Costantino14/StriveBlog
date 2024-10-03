@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { HiOutlinePencilAlt} from "react-icons/hi";
-import { updateComment } from '../services/api';
+import { updateTravelPostComment } from '../services/api';
 import { Form } from 'react-bootstrap';
 
 function ModalComment({id, commentId, chComm, setChComm, updateCommentInList}) {
@@ -34,7 +34,8 @@ function ModalComment({id, commentId, chComm, setChComm, updateCommentInList}) {
     e.stopPropagation();
     try {
       // Chiama l'API per aggiornare il commento
-      await updateComment(id, commentId, { content: localComment });
+      console.log(localComment)
+      await updateTravelPostComment(id, commentId, { content: localComment });
       // Aggiorna il commento nella lista dei commenti del componente genitore
       updateCommentInList(commentId, localComment);
       handleClose();
@@ -46,8 +47,8 @@ function ModalComment({id, commentId, chComm, setChComm, updateCommentInList}) {
   return (
     <>
       {/* Pulsante per aprire il modal */}
-      <Button variant="outline-success" onClick={handleShow}>
-        <HiOutlinePencilAlt />
+      <Button variant="outline-success" className='mt-2' onClick={handleShow}>
+        <HiOutlinePencilAlt size='20'/>
       </Button>
 
       {/* Modal per modificare il commento */}
