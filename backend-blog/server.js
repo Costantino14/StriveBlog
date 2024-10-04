@@ -34,7 +34,7 @@ const corsOptions = {
     const whitelist = [
       'http://localhost:3000',
       'https://striveblog-uz2c.onrender.com',
-      'https://gallivantales-tawny.vercel.app',
+      'https://strive-blog-tawny.vercel.app',
     ];
 
     if (process.env.NODE_ENV === 'development') {
