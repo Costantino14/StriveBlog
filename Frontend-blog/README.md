@@ -70,4 +70,4 @@ Strive Blog è una piattaforma di blogging full-stack che permette agli utenti d
 - Implementazione di un sistema di modifiche post e autore in tempo reale.
 - Miglioramento della UserExperience.
 
-SITO INTERNET: https://strive-blog-tawny.vercel.app/
+SITO INTERNET: https://gallivantales-tawny.vercel.app/
