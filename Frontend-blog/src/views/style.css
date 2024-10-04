@@ -7,7 +7,7 @@ body {
   background-repeat: no-repeat;
   min-height: 100vh;
   color: #060606;
-  padding-top: 50px; /* Adattato all'altezza della navbar */
+  padding-top: 50px;
 }
 
 .root {
@@ -16,13 +16,25 @@ body {
   position: relative;
 }
 
-/* Home Page */
-/* Stili generali della pagina */
+.container {
+  max-width: 1300px;
+  margin: 0 auto;
+}
 
-/* Hero Section Styles */
-/* Hero Section Styles */
+/* Animazioni generali */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+/* Home.jsx */
+/* Hero Section */
 .hero-section {
-  background-image: url('../assets/hero-background.jpg'); /* Assicurati di avere questa immagine */
+  background-image: url('../assets/hero-background.jpg');
   background-size: 100% 100%;
   background-position: center;
   color: white;
@@ -47,7 +59,6 @@ body {
   font-size: 6rem;
   color: #9e0000;
   text-shadow: 2px 2px 4px rgba(179, 228, 235, 0.7);
-
 }
 
 .hero-subtitle {
@@ -88,36 +99,8 @@ body {
   font-size: 1.2rem;
 }
 
-.container {
-  max-width: 1300px;
-  margin: 0 auto;
-}
-
-/* Stili per il titolo e la barra di ricerca */
-h1 {
-  color: white;
-  font-size: 2.5rem;
-  margin-bottom: 30px;
-}
-
-.search-form {
-  margin-bottom: 40px;
-}
-
-.search-form .form-control {
-  border-radius: 20px;
-  padding-left: 40px;
-}
-
-.search-icon {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #6c757d;
-}
-
-/* Stili per la timeline */
+/* Timeline */
+/* Timeline */
 .timeline {
   position: relative;
   margin: 0 auto;
@@ -142,6 +125,8 @@ h1 {
   background-color: inherit;
   width: 50%;
   margin-bottom: 30px;
+  animation: fadeInUp 0.5s ease-out;
+  animation-fill-mode: both;
 }
 
 .timeline-item::after {
@@ -149,7 +134,6 @@ h1 {
   position: absolute;
   width: 24px;
   height: 24px;
-  right: -12px;
   background-color: #3498db;
   top: 20px;
   border-radius: 50%;
@@ -164,13 +148,18 @@ h1 {
   left: 50%;
 }
 
+.timeline-item:nth-child(odd)::after {
+  right: -12px;
+}
+
+.timeline-item:nth-child(even)::after {
+  left: -12px;
+}
+
 .timeline-item:nth-child(odd)::before {
   content: " ";
-  height: 0;
   position: absolute;
   top: 22px;
-  width: 0;
-  z-index: 1;
   right: 30px;
   border: medium solid white;
   border-width: 10px 0 10px 10px;
@@ -179,19 +168,12 @@ h1 {
 
 .timeline-item:nth-child(even)::before {
   content: " ";
-  height: 0;
   position: absolute;
   top: 22px;
-  width: 0;
-  z-index: 1;
   left: 30px;
   border: medium solid white;
   border-width: 10px 10px 10px 0;
   border-color: transparent white transparent transparent;
-}
-
-.timeline-item:nth-child(even)::after {
-  left: -12.5px;
 }
 
 .timeline-content {
@@ -218,49 +200,6 @@ h1 {
   left: -180px;
 }
 
-/* Stili per il contenuto della timeline */
-.timeline-img-container {
-  overflow: hidden;
-  border-radius: 6px;
-  margin-bottom: 15px;
-}
-
-.timeline-img {
-  width: 100%;
-  height: 300px;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-}
-
-.timeline-content:hover .timeline-img {
-  transform: scale(1.05);
-}
-
-.timeline-content h3 {
-  font-size: 1.5rem;
-  margin-bottom: 15px;
-  color: #333;
-}
-
-.timeline-info {
-  margin-bottom: 15px;
-}
-
-.timeline-cities {
-  margin-bottom: 15px;
-}
-
-.timeline-description {
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 15px;
-}
-
-.timeline-author {
-  font-style: italic;
-  color: #888;
-}
-
 /* Badge personalizzati */
 .badge {
   font-size: 0.8rem;
@@ -269,20 +208,7 @@ h1 {
   margin-bottom: 5px;
 }
 
-.badge-primary {
-  background-color: #3498db;
-}
-
-.badge-warning {
-  background-color: #f1c40f;
-  color: #333;
-}
-
-.badge-info {
-  background-color: #2ecc71;
-}
-
-/* Stili per la paginazione */
+/* Paginazione */
 .pagination {
   margin-top: 40px;
   margin-bottom: 5px;
@@ -297,104 +223,28 @@ h1 {
   color: #3498db;
 }
 
-/* Media query per la responsività */
-@media screen and (max-width: 768px) {
-  .timeline::after {
-    left: 31px;
-  }
-  
-  .timeline-item {
-    width: 100%;
-    padding-left: 70px;
-    padding-right: 25px;
-  }
-  
-  .timeline-item::before {
-    left: 60px;
-    border: medium solid white;
-    border-width: 10px 10px 10px 0;
-    border-color: transparent white transparent transparent;
-  }
-
-  .timeline-item::after, .timeline-item:nth-child(even)::after  {
-    left: 19px;
-  }
-  
-  .timeline-item:nth-child(even) {
-    left: 0%;
-  }
-  
-  .timeline-item:nth-child(odd)::before,
-  .timeline-item:nth-child(even)::before {
-    left: 60px;
-    border: medium solid white;
-    border-width: 10px 10px 10px 0;
-    border-color: transparent white transparent transparent;
-  }
-
-  .timeline-item:nth-child(odd) .timeline-date,
-  .timeline-item:nth-child(even) .timeline-date {
-    left: 70px;
-    top: -40px;
-    width: 105px;
-    margin-top: 10px;
-    text-align: left;
-  }
-
-  h1 {
-    font-size: 2rem;
-  }
-}
-
-/* Animazioni */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 40px, 0);
-  }
-
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-.timeline-item {
-  animation: fadeInUp 0.5s ease-out;
-  animation-fill-mode: both;
-}
-
-.timeline-item:nth-child(1) { animation-delay: 0.1s; }
-.timeline-item:nth-child(2) { animation-delay: 0.2s; }
-.timeline-item:nth-child(3) { animation-delay: 0.3s; }
-/* Aggiungere più ritardi se necessario per più elementi */
-
-/*STYLE LOGIN*/
-  
+/* Login.jsx */
 .row-login {
   margin: 150px 0 50px 0;
 }
 
 .background.h-100 {
   background-image: url(https://cdn3.vectorstock.com/i/1000x1000/09/57/seamless-background-keys-and-locks-vector-1970957.jpg);
-
 }
 
 #contenitore-login {
   position: relative;
   padding: 30px;
-  color: #000; /* Assicuriamoci che il testo sia nero */
+  color: #000;
 }
 
-
-  /*STYLE REGISTER*/
-  
- #contenitore-register, #new-blog-container {
+/* Register.jsx */
+#contenitore-register {
   position: relative;
   margin-top: 50px;
   margin-bottom: 25px;
   padding: 15px;
-  color: #000; /* Assicuriamoci che il testo sia nero */
+  color: #000;
 }
 
 #contenitore-register::before, #new-blog-container::before, #contenitore-login::before {
@@ -404,18 +254,17 @@ h1 {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(255, 255, 255, 0.7); /* Velo bianco semi-trasparente */
-  backdrop-filter: blur(5px); /* Effetto sfocatura per migliorare la leggibilità */
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(5px);
   z-index: 1;
-  border-radius: 10px; /* Bordi arrotondati per un look più morbido */
+  border-radius: 10px;
 }
 
-#contenitore-register > * , #new-blog-container > *, #contenitore-login > *  {
+#contenitore-register > *, #new-blog-container > *, #contenitore-login > * {
   position: relative;
-  z-index: 2; /* Assicuriamoci che il contenuto sia sopra il velo */
+  z-index: 2;
 }
 
-/* Stili aggiuntivi per migliorare l'aspetto del form */
 .card-register {
   background-color: transparent;
   border: none;
@@ -458,9 +307,7 @@ h1 {
   border-color: #1d2124;
 }
 
-/* Blog Post */
-
-
+/* Blog.jsx */
 .blog-post {
   margin-top: 30px;
   padding-bottom: 50px;
@@ -479,97 +326,17 @@ h1 {
   margin-bottom: 30px;
 }
 
-.hero-header .overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-}
-
 .blog-details-title {
   font-size: 3rem;
   z-index: 1;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
-.travel-details-card, .author-card {
-  transition: transform 0.3s ease-in-out;
-  height: 100%;
-}
-
-.travel-details-card:hover, .author-card:hover {
-  transform: translateY(-5px);
-}
-
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-  background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 50%;
-}
-
-.carousel-image {
-  object-fit: cover;
-  height: 400px; /* Altezza predefinita per dispositivi mobili */
-}
-
-@media (min-width: 992px) {
-  .carousel-image {
-    height: 700px; /* Altezza per schermi large e superiori */
-  }
-}
-
-/* Parallax and Travel Tips */
-.parallax-section {
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  height: 400px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 50px 0;
-}
-
-.parallax-content {
-  background: rgba(255,255,255,0.8);
-  padding: 20px;
-  border-radius: 10px;
-  max-width: 80%;
-}
-
-.travel-tips-section {
-  background-color: #f8f9fa;
-  padding: 40px 0;
-  border-radius: 10px;
-}
-
-.travel-tips-content {
-  max-width: 80%;
-  margin: 0 auto;
-}
-
-.travel-tip {
-  font-style: italic;
-  border-left: 5px solid #007bff;
-  padding-left: 20px;
-  margin-top: 20px;
-}
-
-/* Comments */
 .comments-section {
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-.comment-item {
-  border-bottom: 1px solid #e9ecef;
-  padding: 15px 0;
-}
-
-.comment-item:last-child {
-  border-bottom: none;
-}
-
-/* Profile */
+/* Profile.jsx */
 .profile-center {
   display: flex;
   flex-direction: column;
@@ -608,18 +375,64 @@ h1 {
   width: 48%;
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+/* New.jsx */
+#new-blog-container {
+  position: relative;
+  margin-top: 50px;
+  margin-bottom: 25px;
+  padding: 15px;
+  color: #000;
 }
 
-.fade-in {
-  animation: fadeIn 0.5s ease-in;
-}
+/* Media Queries */
+@media screen and (max-width: 768px) {
+  .timeline::after {
+    left: 31px;
+  }
+  
+  .timeline-item {
+    width: 100%;
+    padding-left: 70px;
+    padding-right: 25px;
+  }
+  
+  .timeline-item::before {
+    left: 60px;
+    border: medium solid white;
+    border-width: 10px 10px 10px 0;
+    border-color: transparent white transparent transparent;
+  }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
+  .timeline-item::after {
+    left: 19px;
+  }
+  
+  .timeline-item:nth-child(even) {
+    left: 0%;
+  }
+  
+  .timeline-item:nth-child(odd)::after,
+  .timeline-item:nth-child(even)::after {
+    left: 19px;
+  }
+  
+  .timeline-item:nth-child(odd)::before,
+  .timeline-item:nth-child(even)::before {
+    left: 60px;
+    border: medium solid white;
+    border-width: 10px 10px 10px 0;
+    border-color: transparent white transparent transparent;
+  }
+
+  .timeline-item:nth-child(odd) .timeline-date,
+  .timeline-item:nth-child(even) .timeline-date {
+    left: 70px;
+    top: -40px;
+    width: 105px;
+    margin-top: 10px;
+    text-align: left;
+  }
+
   body {
     padding-top: 100px;
   }
@@ -637,7 +450,7 @@ h1 {
   }
 }
 
-@media (max-width: 576px) {
+@media screen and (max-width: 576px) {
   .blog-navbar-add-button {
     width: 100px;
     font-size: 0.9rem;
