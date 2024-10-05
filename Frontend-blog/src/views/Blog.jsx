@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Container, Form, ListGroup, Card, Row, Col, Badge, Accordion, Modal } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import ModalComment from "../components/ModalComment"
 import { getTravelPost, getTravelPostComments, addTravelPostComment, getUserData, deleteTravelPostComment } from "../services/api";
 import { FaUser, FaCalendarAlt, FaMapMarkerAlt, FaMoneyBillWave, FaPlane } from 'react-icons/fa';
@@ -19,6 +19,7 @@ const Blog = () => {
   const [selectedImage, setSelectedImage] = useState("");
   const [chComm, setChComm] = useState({content: ""})
   const [emailUtente, setEmailUtente] = useState("")
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
 
 
@@ -30,8 +31,10 @@ const Blog = () => {
           const userDataResponse = await getUserData();
           setEmailUtente(userDataResponse.email);
           setNewComment(prev => ({ ...prev, name: userDataResponse.nome, email: userDataResponse.email }));
+          setIsLoggedIn(true)
         } catch (userError) {
           console.error("Utente non autenticato:", userError);
+          setIsLoggedIn(false)
           // Non bloccare l'esecuzione se l'utente non è autenticato
         }
   
@@ -175,9 +178,11 @@ const Blog = () => {
         <Accordion defaultActiveKey="0" className="mb-5">
           {post.cities.map((city, index) => (
             <Accordion.Item eventKey={index.toString()} key={index}>
-              <Accordion.Header>
-                <FaMapMarkerAlt size='25' className="me-2" />
-                <h5>{city.name}</h5>
+              <Accordion.Header >
+                <div className="d-flex align-content-center">
+                  <FaMapMarkerAlt size='25' className="me-2" />
+                  <h5>{city.name}</h5>
+                </div>
               </Accordion.Header>
               <Accordion.Body>
                 <ReactMarkdown>{city.description}</ReactMarkdown>
@@ -232,6 +237,7 @@ const Blog = () => {
                   </ListGroup.Item>
               ))}
             </ListGroup>
+            {isLoggedIn? <>
             <Form onSubmit={handleCommentSubmit} className="mt-4">
               <Form.Group className="mb-3">
                 <Form.Label>Aggiungi un commento</Form.Label>
@@ -247,7 +253,12 @@ const Blog = () => {
                 <i className="bi bi-send me-2"></i>
                 Invia commento
               </Button>
-            </Form>
+            </Form></> : <>
+            <Link to="/login" className="btn btn-primary">
+              LogIn per commentare
+            </Link>
+            </>}
+            
           </Card.Body>
         </Card>
       </Container>

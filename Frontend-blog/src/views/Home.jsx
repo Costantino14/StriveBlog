@@ -17,6 +17,14 @@ const Home = ({ listAuthors }) => {
 
   useEffect(() => {
     const fetchData = async () => {
+      try {
+        const postsData = await getTravelPosts(currentPage, 'createdAt', 'desc');
+        setTravelPosts(postsData.travelPosts);
+        setTotalPages(postsData.totalPages);
+      } catch (error) {
+        console.error("Errore nel recupero dei post:", error);
+      }
+      
       const token = localStorage.getItem("token");
       if (token) {
         try {
@@ -29,14 +37,6 @@ const Home = ({ listAuthors }) => {
         }
       } else {
         setIsLoggedIn(false);
-      }
-  
-      try {
-        const postsData = await getTravelPosts(currentPage, 'createdAt', 'desc');
-        setTravelPosts(postsData.travelPosts);
-        setTotalPages(postsData.totalPages);
-      } catch (error) {
-        console.error("Errore nel recupero dei post:", error);
       }
     };
   

@@ -49,11 +49,11 @@ body {
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
   margin-bottom: 1.25rem;
-  color: var(--white);
 }
 
 h1 {
   font-size: 2.5rem;
+  color: var(--white);
 }
 
 /* Hero Section */
@@ -247,6 +247,11 @@ h1 {
 }
 
 /* Login e Register */
+
+.background.h-100 {
+  background-image: url('../assets/background-keys.jpg');
+}
+
 .row-login {
   margin: 9.375rem 0 3.125rem 0;
 }
@@ -339,7 +344,7 @@ h1 {
 }
 
 .title-profile {
-  margin-top: 1.875rem;
+  margin-top: 4.5rem;
 }
 
 .profile-card {
