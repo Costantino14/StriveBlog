@@ -1,9 +1,9 @@
 import axios from "axios";
 
 // Definiamo l'url di base'
-//const API_URL = "http://localhost:5001/api";
+const API_URL = "http://localhost:5001/api";
 
-const API_URL = "https://striveblog-uz2c.onrender.com/api" || "http://localhost:5001/api" ;
+//const API_URL = "https://striveblog-uz2c.onrender.com/api" || "http://localhost:5001/api" ;
 
 const api = axios.create({
   baseURL: API_URL,

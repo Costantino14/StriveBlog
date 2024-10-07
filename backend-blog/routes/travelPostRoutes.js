@@ -3,6 +3,7 @@ import TravelPost from "../models/TravelPost.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import cloudinaryUploader from "../Config/cloudinaryConfig.js";
 import { v2 as cloudinary } from "cloudinary";
+import { sendEmail } from "../services/emailServices.js";
 
 const router = express.Router();
 
@@ -89,6 +90,17 @@ router.post("/", cloudinaryUploader.any(), async (req, res) => {
     // Salva postData nel database
     const newTravelPost = new TravelPost(postData);
     await newTravelPost.save();
+
+    //  CODICE PER INVIO MAIL con MAILGUN, anche qui ho messo che appena si registra qualcuno arriva a me la mail, l'unica autorizzata da mailgun
+    const htmlContent = `
+      <h1>Un utente a creato un post!</h1>
+    `;
+
+    await sendEmail(
+      'costantino.grabesu14@gmail.com', 
+      `L'utente ${newTravelPost.author} ha postato un viaggio!`,
+      htmlContent
+    );
 
     res.status(201).json({ message: "Post creato con successo", post: newTravelPost });
   } catch (error) {

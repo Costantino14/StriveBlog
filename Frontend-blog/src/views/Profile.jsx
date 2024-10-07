@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import "./style.css";
 import { deleteAuthor, deleteTravelPost, getTravelPosts, getUserData, updateProfile } from '../services/api';
-import { Button, Card, Col, Container, Row, Form, Modal } from 'react-bootstrap';
+import { Button, Card, Col, Container, Row, Form, Modal, Spinner } from 'react-bootstrap';
 import { HiOutlineTrash, HiOutlinePencil } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import EditTravelPostModal from '../components/EditTravelPostModal';
@@ -123,13 +123,17 @@ export default function Profile() {
     }
   };
 
-  if (!userData) {
-    return <div>Caricamento...</div>;
-  }
-
   return (
-    <div className='root'>
-      <Container>
+  <div className='root'>
+    <Container>
+      {!userData ? (
+        <div className="d-flex justify-content-center align-items-center" style={{height: "calc(100vh - 200px)"}}>
+          <Spinner animation="border" role="status" variant="primary">
+            <span className="visually-hidden">Caricamento...</span>
+          </Spinner>
+        </div>
+      ) : (
+      <>
         <div className='profile-center'>
           <h1 className='title-profile'>Profilo</h1>
           
@@ -180,61 +184,63 @@ export default function Profile() {
             </Card>
           ))}
 
-<EditTravelPostModal 
-        show={showEditPostModal}
-        handleClose={() => setShowEditPostModal(false)}
-        postId={selectedPostId}
-        onPostUpdated={handlePostUpdated}
-      />
+          <EditTravelPostModal 
+            show={showEditPostModal}
+            handleClose={() => setShowEditPostModal(false)}
+            postId={selectedPostId}
+            onPostUpdated={handlePostUpdated}
+          />
 
-        <Modal show={showEditModal} onHide={handleCloseEditModal}>
-          <Modal.Header closeButton>
-            <Modal.Title>Modifica Profilo</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form onSubmit={handleEditFormSubmit}>
-              <Form.Group className="mb-3">
-                <Form.Label>Nome</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="nome"
-                  value={editFormData.nome}
-                  onChange={handleEditFormChange}
-                />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label>Cognome</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="cognome"
-                  value={editFormData.cognome}
-                  onChange={handleEditFormChange}
-                />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label>Data di Nascita</Form.Label>
-                <Form.Control
-                  type="date"
-                  name="dataNascita"
-                  value={editFormData.dataNascita}
-                  onChange={handleEditFormChange}
-                />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label>Avatar</Form.Label>
-                <Form.Control
-                  type="file"
-                  name="avatar"
-                  onChange={handleEditFormChange}
-                />
-              </Form.Group>
-              <Button variant="primary" type="submit">
-                Salva Modifiche
-              </Button>
-            </Form>
-          </Modal.Body>
-        </Modal>
+          <Modal show={showEditModal} onHide={handleCloseEditModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>Modifica Profilo</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form onSubmit={handleEditFormSubmit}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Nome</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="nome"
+                    value={editFormData.nome}
+                    onChange={handleEditFormChange}
+                  />
+                </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>Cognome</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="cognome"
+                    value={editFormData.cognome}
+                    onChange={handleEditFormChange}
+                  />
+                </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>Data di Nascita</Form.Label>
+                  <Form.Control
+                    type="date"
+                    name="dataNascita"
+                    value={editFormData.dataNascita}
+                    onChange={handleEditFormChange}
+                  />
+                </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>Avatar</Form.Label>
+                  <Form.Control
+                    type="file"
+                    name="avatar"
+                    onChange={handleEditFormChange}
+                  />
+                </Form.Group>
+                <Button variant="primary" type="submit">
+                  Salva Modifiche
+                </Button>
+              </Form>
+            </Modal.Body>
+          </Modal>
+        </>
+        )}
       </Container>
     </div>
-  )
+  );
 }

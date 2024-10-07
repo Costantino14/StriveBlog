@@ -386,7 +386,7 @@ const NewTravelPost = () => {
             </Form.Control>
           </Form.Group>
           <Form.Group controlId="coverImage" className="mt-3">
-            <Form.Label>Immagine di copertina</Form.Label>
+            <Form.Label>Immagine di copertina (formati ammessi: jpg, png, jpeg, gif)</Form.Label>
             <Form.Control
               type="file"
               onChange={handleCoverImageChange}
@@ -440,7 +440,7 @@ const NewTravelPost = () => {
                 />
               </Form.Group>
               <Form.Group controlId={`cityImages-${index}`} className="mt-2">
-                <Form.Label>Immagini (max 10)</Form.Label>
+                <Form.Label>Immagini (max 10, formati ammessi: jpg, png, jpeg, gif)</Form.Label>
                 <Form.Control 
                   type="file"
                   multiple

@@ -52,12 +52,12 @@ router.post('/', cloudinaryUploader1.single('avatar'), async (req,res) => {
 //
   //  CODICE PER INVIO MAIL con MAILGUN, anche qui ho messo che appena si registra qualcuno arriva a me la mail, l'unica autorizzata da mailgun
     const htmlContent = `
-      <h1>Grazie per esserti registrato!</h1>
+      <h1>Nuovo utente registrato!</h1>
     `;
 
     await sendEmail(
       'costantino.grabesu14@gmail.com', 
-      `${newAuthor.email}Ti sei registrato correttamente`,
+      `L'utente ${newAuthor.email} si è registrato correttamente`,
       htmlContent
     );
 
